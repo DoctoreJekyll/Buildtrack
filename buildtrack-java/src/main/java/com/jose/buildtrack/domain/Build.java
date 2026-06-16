@@ -5,8 +5,6 @@ public class Build {
     private final String version;
     private BuildStatus status;
 
-    private boolean finished = false;
-
     public Build(String id, String version) {
         validateRequiredText(id, "ID");
         validateRequiredText(version, "Version");
@@ -14,7 +12,6 @@ public class Build {
         this.id = id;
         this.version = version;
         status = BuildStatus.CREATED;
-        finished = false;
     }
 
     private void validateRequiredText(String value, String fieldName) {
@@ -44,17 +41,20 @@ public class Build {
         status = BuildStatus.VALIDATING;
     }
 
-    public void completeValidation(boolean isValid) {
-        if (finished) {
-            throw new IllegalStateException("Build validation has already been completed");
-        }
 
+
+    public void approve() {
         if (status != BuildStatus.VALIDATING) {
-            throw new IllegalStateException("Build must be in VALIDATING status to complete validation");
+            throw new IllegalStateException("Build must be in VALIDATING status to approve");
         }
-        status = isValid ? BuildStatus.APPROVED : BuildStatus.REJECTED;
+        status = BuildStatus.APPROVED;
+    }
 
-        finished = true;
+    public void reject() {
+        if (status != BuildStatus.VALIDATING) {
+            throw new IllegalStateException("Build must be in VALIDATING status to reject");
+        }
+        status = BuildStatus.REJECTED;
     }
 
 }
