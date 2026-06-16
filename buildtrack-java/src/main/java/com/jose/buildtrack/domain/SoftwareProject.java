@@ -1,6 +1,7 @@
 package com.jose.buildtrack.domain;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.ArrayList;
 
 public class SoftwareProject {
@@ -62,6 +63,27 @@ public class SoftwareProject {
                 throw new IllegalArgumentException("Build version must be unique within the project");
             }
         }
+    }
+
+    public Optional<Build> findBuildById(String buildId) {
+
+        if (buildId == null || buildId.isBlank()) {
+            throw new IllegalArgumentException("Build ID cannot be null, empty, or blank");
+        }
+
+
+        for (Build build : builds) {
+            if (build.getId().equals(buildId)) {
+                return Optional.of(build);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void startBuildValidation(String buildId) {
+        Build build = findBuildById(buildId)
+                .orElseThrow(() -> new IllegalArgumentException("Build with ID " + buildId + " not found"));
+        build.startValidation();
     }
 
 }
