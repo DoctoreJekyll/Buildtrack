@@ -1,6 +1,7 @@
 package com.jose.buildtrack;
 
 import com.jose.buildtrack.domain.Build;
+import com.jose.buildtrack.domain.SoftwareProject;
 
 public class App 
 {
@@ -18,5 +19,12 @@ public class App
 
         build.startValidation();
         System.out.println("Build Status after validation: " + build.getStatus());
+
+        SoftwareProject project = new SoftwareProject("1", "My Project");
+        project.addBuild(build);
+        project.addBuild(build2);
+        System.out.println("Project ID: " + project.getId());
+        System.out.println("Project Name: " + project.getName());
+        System.out.println("Project Builds: " + project.getBuilds().size());
     }
 }
