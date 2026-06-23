@@ -58,13 +58,13 @@ public class SoftwareProject {
         }
     }
 
-    private void verifyUniqueBuildVersion(String buildVersion) {
-        for (Build build : builds) {
-            if (build.getVersion().equals(buildVersion)) {
-                throw new IllegalArgumentException("Build version must be unique within the project");
-            }
+    private void verifyUniqueBuildVersion(BuildVersion buildVersion) {
+    for (Build build : builds) {
+        if (build.getVersion().equals(buildVersion)) {
+            throw new IllegalArgumentException("Build version must be unique within the project");
         }
     }
+}
 
     public Optional<Build> findBuildById(String buildId) {
 
@@ -86,6 +86,10 @@ public class SoftwareProject {
     }
 
     public int countBuildsByStatus(BuildStatus status) {
+        if (status == null) {
+        throw new IllegalArgumentException("Build status cannot be null");
+        }
+
         int count = 0;
         for (Build build : builds) {
             if (build.getStatus() == status) {
