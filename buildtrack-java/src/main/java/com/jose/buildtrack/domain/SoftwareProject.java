@@ -19,7 +19,7 @@ public class SoftwareProject {
         builds = new ArrayList<>();
     }
 
-        private void validateRequiredText(String value, String fieldName) {
+    private void validateRequiredText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(
                     fieldName + " cannot be null, empty, or blank"
@@ -39,6 +39,7 @@ public class SoftwareProject {
     public List<Build> getBuilds() {
         return List.copyOf(builds);
     }
+
 
     public void addBuild(Build build) {
         if (build == null) {
@@ -67,9 +68,7 @@ public class SoftwareProject {
 
     public Optional<Build> findBuildById(String buildId) {
 
-        if (buildId == null || buildId.isBlank()) {
-            throw new IllegalArgumentException("Build ID cannot be null, empty, or blank");
-        }
+        validateRequiredText(buildId, "Build ID");
 
 
         for (Build build : builds) {
@@ -84,6 +83,44 @@ public class SoftwareProject {
         Build build = findBuildById(buildId)
                 .orElseThrow(() -> new IllegalArgumentException("Build with ID " + buildId + " not found"));
         build.startValidation();
+    }
+
+    public int countBuildsByStatus(BuildStatus status) {
+        int count = 0;
+        for (Build build : builds) {
+            if (build.getStatus() == status) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public void approveBuildById(String buildId) {
+        Build build = findBuildById(buildId)
+                .orElseThrow(() -> new IllegalArgumentException("Build with ID " + buildId + " not found"));
+        build.approve();
+    }
+
+    public void rejectBuildById(String buildId) {
+        Build build = findBuildById(buildId)
+                .orElseThrow(() -> new IllegalArgumentException("Build with ID " + buildId + " not found"));
+        build.reject();
+    }
+
+    public List<Build> findBuildsByStatus(BuildStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Build status cannot be null");
+        }
+
+        List<Build> matchingBuilds = new ArrayList<>();
+
+        for (Build build : builds) {
+            if (build.getStatus() == status) {
+                matchingBuilds.add(build);
+            }
+        }
+
+        return List.copyOf(matchingBuilds);
     }
 
 }
