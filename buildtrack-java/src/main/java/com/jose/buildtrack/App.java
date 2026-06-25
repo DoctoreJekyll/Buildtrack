@@ -3,6 +3,7 @@ package com.jose.buildtrack;
 import com.jose.buildtrack.domain.Build;
 import com.jose.buildtrack.domain.BuildStatus;
 import com.jose.buildtrack.domain.BuildVersion;
+import com.jose.buildtrack.domain.Platform;
 import com.jose.buildtrack.domain.SoftwareProject;
 
 import java.util.List;
@@ -41,9 +42,9 @@ public class App {
     }
 
     private static void registerBuilds(SoftwareProject project) {
-        project.addBuild(new Build("build-001", new BuildVersion("1.0.0")));
-        project.addBuild(new Build("build-002", new BuildVersion("1.1.0")));
-        project.addBuild(new Build("build-003", new BuildVersion("1.2.0")));
+        project.addBuild(new Build("build-001", new BuildVersion("1.0.0"), Platform.WINDOWS));
+        project.addBuild(new Build("build-002", new BuildVersion("1.1.0"), Platform.WINDOWS));
+        project.addBuild(new Build("build-003", new BuildVersion("1.2.0"), Platform.WINDOWS));
     }
 
     private static void printRegisteredBuilds(SoftwareProject project) {
@@ -110,7 +111,7 @@ public class App {
         }
 
         try {
-            project.addBuild(new Build("build-004", new BuildVersion("1.0.0")));
+            project.addBuild(new Build("build-004", new BuildVersion("1.0.0"), Platform.WINDOWS));
         } catch (IllegalArgumentException exception) {
             System.out.println("Duplicated version rejected: " + exception.getMessage());
         }

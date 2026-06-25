@@ -10,7 +10,8 @@ public class BuildTest {
     void shouldStartWithCreatedStatus() {
         Build build = new Build(
                 "build-001",
-                new BuildVersion("1.0.0")
+                new BuildVersion("1.0.0"),
+                Platform.WINDOWS
         );
 
         assertEquals(BuildStatus.CREATED, build.getStatus());
@@ -20,7 +21,7 @@ public class BuildTest {
     void shouldRejectBuildWhenVersionIsNull() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new Build("build-001", null)
+                () -> new Build("build-001", null, Platform.WINDOWS)
         );
     }
 
@@ -28,7 +29,8 @@ public class BuildTest {
     void shouldStartValidationWhenBuildIsCreated() {
         Build build = new Build(
                 "build-001",
-                new BuildVersion("1.0.0")
+                new BuildVersion("1.0.0"),
+                Platform.WINDOWS
         );
 
         build.startValidation();

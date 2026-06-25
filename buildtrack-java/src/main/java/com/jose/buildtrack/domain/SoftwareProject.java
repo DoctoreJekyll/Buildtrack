@@ -46,7 +46,7 @@ public class SoftwareProject {
             throw new IllegalArgumentException("Build cannot be null");
         }
         verifyUniqueBuildId(build.getId());
-        verifyUniqueBuildVersion(build.getVersion());
+        verifyUniqueBuild(build.getVersion(), build.getPlatform());
         builds.add(build);
     }
 
@@ -58,12 +58,12 @@ public class SoftwareProject {
         }
     }
 
-    private void verifyUniqueBuildVersion(BuildVersion buildVersion) {
-    for (Build build : builds) {
-        if (build.getVersion().equals(buildVersion)) {
-            throw new IllegalArgumentException("Build version must be unique within the project");
+    private void verifyUniqueBuild(BuildVersion buildVersion, Platform platform) {
+        for (Build build : builds) {
+            if (build.getVersion().equals(buildVersion) && build.getPlatform().equals(platform)) {
+                throw new IllegalArgumentException("Build version must be unique within the project");
+            }
         }
-    }
 }
 
     public Optional<Build> findBuildById(String buildId) {
@@ -87,7 +87,7 @@ public class SoftwareProject {
 
     public int countBuildsByStatus(BuildStatus status) {
         if (status == null) {
-        throw new IllegalArgumentException("Build status cannot be null");
+            throw new IllegalArgumentException("Build status cannot be null");
         }
 
         int count = 0;
