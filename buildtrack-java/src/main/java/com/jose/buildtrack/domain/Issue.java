@@ -47,5 +47,12 @@ public class Issue {
     public IssueStatus getStatus() {
         return status;
     }
+
+    public void resolve() {
+        if (status != IssueStatus.OPEN) {
+            throw new IllegalStateException("Only OPEN issues can be resolved");
+        }
+        this.status = IssueStatus.RESOLVED;
+    }
     
 }
