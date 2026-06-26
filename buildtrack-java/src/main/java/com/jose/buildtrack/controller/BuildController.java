@@ -13,6 +13,7 @@ import com.jose.buildtrack.domain.Build;
 import com.jose.buildtrack.domain.Platform;
 import com.jose.buildtrack.dto.BuildResponseDTO;
 import com.jose.buildtrack.dto.CreateBuildRequestDTO;
+import com.jose.buildtrack.exceptions.BuildNotFoundException;
 import com.jose.buildtrack.service.BuildService;
 
 @RestController
@@ -38,7 +39,7 @@ public class BuildController {
     @GetMapping("/{id}")
     public BuildResponseDTO getBuild(@PathVariable String id) {
         Build build = buildService.findBuildById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Build not found"));
+                .orElseThrow(() -> new BuildNotFoundException(id));
         
         return toResponseDTO(build);
     }

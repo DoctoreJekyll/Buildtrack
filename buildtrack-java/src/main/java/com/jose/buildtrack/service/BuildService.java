@@ -3,6 +3,7 @@ package com.jose.buildtrack.service;
 import com.jose.buildtrack.domain.Build;
 import com.jose.buildtrack.domain.BuildVersion;
 import com.jose.buildtrack.domain.Platform;
+import com.jose.buildtrack.exceptions.BuildNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,22 +42,22 @@ public class BuildService {
 
     public Build startValidation(String buildId) {
 
-        Build build = getBuild(buildId);
+        Build build = getBuildOrThrow(buildId);
 
         build.startValidation();
 
         return build;
     }
 
-    private Build getBuild(String buildId) {
+    private Build getBuildOrThrow(String buildId) {
         Build build = findBuildById(buildId)
-                .orElseThrow(() -> new IllegalArgumentException("Build not found"));
+                .orElseThrow(() -> new BuildNotFoundException(buildId));
         return build;
     }
 
     public Build approveBuild(String buildId) {
 
-        Build build = getBuild(buildId);
+        Build build = getBuildOrThrow(buildId);
 
         build.approve();
 
@@ -65,7 +66,7 @@ public class BuildService {
 
     public Build rejectBuild(String buildId) {
 
-        Build build = getBuild(buildId);
+        Build build = getBuildOrThrow(buildId);
 
         build.reject();
 
