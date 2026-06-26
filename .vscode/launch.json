@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "BuildtrackApplication",
+            "request": "launch",
+            "mainClass": "com.jose.buildtrack.BuildtrackApplication",
+            "projectName": "buildtrack-java"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-App<buildtrack-java>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.jose.buildtrack.App",
+            "projectName": "buildtrack-java",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

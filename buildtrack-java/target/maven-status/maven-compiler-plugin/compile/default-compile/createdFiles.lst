@@ -1,0 +1,12 @@
+com\jose\buildtrack\domain\BuildStatus.class
+com\jose\buildtrack\App.class
+com\jose\buildtrack\domain\Platform.class
+com\jose\buildtrack\domain\Issue.class
+com\jose\buildtrack\domain\IssueStatus.class
+com\jose\buildtrack\domain\Release.class
+com\jose\buildtrack\domain\SoftwareProject.class
+com\jose\buildtrack\service\BuildService.class
+com\jose\buildtrack\domain\BuildVersion.class
+com\jose\buildtrack\domain\IssueSeverity.class
+com\jose\buildtrack\domain\ReleaseStatus.class
+com\jose\buildtrack\domain\Build.class
