@@ -35,33 +35,40 @@ public class BuildService {
         return Optional.empty();
     }
 
-    public void startValidation(String buildId) {
+    public List<Build> getAllBuilds() {
+        return List.copyOf(builds);
+    }
 
-        Build build = findBuildById(buildId)
-                .orElseThrow(() -> new IllegalArgumentException("Build not found"));
+    public Build startValidation(String buildId) {
+
+        Build build = getBuild(buildId);
 
         build.startValidation();
+
+        return build;
     }
 
-    public void approveBuild(String buildId) {
-
+    private Build getBuild(String buildId) {
         Build build = findBuildById(buildId)
                 .orElseThrow(() -> new IllegalArgumentException("Build not found"));
+        return build;
+    }
+
+    public Build approveBuild(String buildId) {
+
+        Build build = getBuild(buildId);
 
         build.approve();
+
+        return build;
     }
 
-    public void rejectBuild(String buildId) {
+    public Build rejectBuild(String buildId) {
 
-        Build build = findBuildById(buildId)
-                .orElseThrow(() -> new IllegalArgumentException("Build not found"));
+        Build build = getBuild(buildId);
 
         build.reject();
-    }
 
-    public void listBuilds() {
-        for (Build build : builds) {
-            System.out.println("Build ID: " + build.getId() + ", Version: " + build.getVersion() + ", Status: " + build.getStatus());
-        }
+        return build;
     }
 }

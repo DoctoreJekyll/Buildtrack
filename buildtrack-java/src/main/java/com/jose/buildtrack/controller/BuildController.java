@@ -1,11 +1,12 @@
 package com.jose.buildtrack.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jose.buildtrack.domain.Build;
@@ -42,14 +43,29 @@ public class BuildController {
         return toResponseDTO(build);
     }
 
+    @GetMapping
+    public List<BuildResponseDTO> getAllBuilds() {
+        return buildService.getAllBuilds()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
     @PostMapping("/{id}/validate")
     public BuildResponseDTO validate(@PathVariable String id) {
+        Build build = buildService.startValidation(id);
+        return toResponseDTO(build);
+    }
 
-        buildService.startValidation(id);
+    @PostMapping("/{id}/approve")
+    public BuildResponseDTO approve(@PathVariable String id) {
+        Build build = buildService.approveBuild(id);
+        return toResponseDTO(build);
+    }
 
-        Build build = buildService.findBuildById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Build not found"));
-
+    @PostMapping("/{id}/reject")
+    public BuildResponseDTO reject(@PathVariable String id) {
+        Build build = buildService.rejectBuild(id);
         return toResponseDTO(build);
     }
 
