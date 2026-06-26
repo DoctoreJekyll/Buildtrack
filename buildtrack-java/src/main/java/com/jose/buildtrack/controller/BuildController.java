@@ -1,16 +1,17 @@
 package com.jose.buildtrack.controller;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jose.buildtrack.domain.Build;
 import com.jose.buildtrack.domain.Platform;
+import com.jose.buildtrack.dto.BuildResponseDTO;
+import com.jose.buildtrack.dto.CreateBuildRequestDTO;
 import com.jose.buildtrack.service.BuildService;
 
 @RestController
@@ -23,23 +24,42 @@ public class BuildController {
     }
 
     @PostMapping
-    public Build create(
-            @RequestParam String id,
-            @RequestParam String version,
-            @RequestParam Platform platform
-    ) {
-        return buildService.createBuild(id, version, platform);
+    public BuildResponseDTO create(@RequestBody CreateBuildRequestDTO request)
+    {
+        Build build = buildService.createBuild(
+            request.id(), 
+            request.version(), 
+            Platform.valueOf(request.platform().toUpperCase()));
+
+        return toResponseDTO(build);
     }
 
     @GetMapping("/{id}")
-    public Build getBuild(@PathVariable String id) {
-        return buildService.findBuildById(id)
+    public BuildResponseDTO getBuild(@PathVariable String id) {
+        Build build = buildService.findBuildById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Build not found"));
+        
+        return toResponseDTO(build);
     }
 
     @PostMapping("/{id}/validate")
-    public void validate(@PathVariable String id) {
+    public BuildResponseDTO validate(@PathVariable String id) {
+
         buildService.startValidation(id);
+
+        Build build = buildService.findBuildById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Build not found"));
+
+        return toResponseDTO(build);
+    }
+
+    private BuildResponseDTO toResponseDTO(Build build) {
+        return new BuildResponseDTO(
+            build.getId(),
+            build.getVersion().getValue(),
+            build.getPlatform().name(),
+            build.getStatus().name()
+        );
     }
 
 }
