@@ -21,6 +21,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    @ExceptionHandler(BuildAlreadyExistException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBuildAlreadyExists(BuildAlreadyExistException exception) {
+
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                exception.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
     @ExceptionHandler({
             IllegalArgumentException.class,
             IllegalStateException.class

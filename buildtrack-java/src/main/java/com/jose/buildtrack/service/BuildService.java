@@ -3,6 +3,7 @@ package com.jose.buildtrack.service;
 import com.jose.buildtrack.domain.Build;
 import com.jose.buildtrack.domain.BuildVersion;
 import com.jose.buildtrack.domain.Platform;
+import com.jose.buildtrack.exceptions.BuildAlreadyExistException;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
 import com.jose.buildtrack.repository.BuildRepository;
 
@@ -22,6 +23,10 @@ public class BuildService {
     }
 
     public Build createBuild(String id, String version, Platform platform) {
+
+        if (buildRepository.findById(id).isPresent()) {
+            throw new BuildAlreadyExistException(id);
+        }
 
         Build build = new Build(id, new BuildVersion(version), platform);
 
