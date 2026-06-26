@@ -4,8 +4,9 @@ import com.jose.buildtrack.domain.Build;
 import com.jose.buildtrack.domain.BuildVersion;
 import com.jose.buildtrack.domain.Platform;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
+import com.jose.buildtrack.repository.BuildRepository;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -14,30 +15,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class BuildService {
 
-    private final List<Build> builds = new ArrayList<>();
+    private final BuildRepository buildRepository;
+
+    public BuildService(BuildRepository buildRepository) {
+        this.buildRepository = buildRepository;
+    }
 
     public Build createBuild(String id, String version, Platform platform) {
 
         Build build = new Build(id, new BuildVersion(version), platform);
 
-        builds.add(build);
-
-        return build;
+        return buildRepository.save(build);
     }
 
     public Optional<Build> findBuildById(String buildId) {
-
-        for (Build build : builds) {
-            if (build.getId().equals(buildId)) {
-                return Optional.of(build);
-            }
-        }
-
-        return Optional.empty();
+        return buildRepository.findById(buildId);
     }
 
     public List<Build> getAllBuilds() {
-        return List.copyOf(builds);
+        return buildRepository.findAll();
     }
 
     public Build startValidation(String buildId) {
