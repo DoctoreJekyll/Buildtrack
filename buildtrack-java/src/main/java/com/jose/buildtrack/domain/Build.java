@@ -92,6 +92,8 @@ public class Build {
             throw new IllegalArgumentException("Issue cannot be null");
         }
 
+        verifyUniqueIssueId(issue.getId());
+
         issues.add(issue);
     }
 
@@ -109,5 +111,12 @@ public class Build {
         return false;
     }
 
+    private void verifyUniqueIssueId(String issueId) {
+        for (Issue issue : issues) {
+            if (issue.getId().equals(issueId)) {
+                throw new IllegalArgumentException("Issue ID must be unique within the build");
+            }
+        }
+    }
 
 }

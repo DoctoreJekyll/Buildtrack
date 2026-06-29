@@ -1,5 +1,12 @@
 package com.jose.buildtrack.dto;
 
-public record BuildResponseDTO(String id, String version, String platform, String status) {
+import java.util.List;
+
+public record BuildResponseDTO(
+    String id, 
+    String version, 
+    String platform, 
+    String status,
+    List<IssueResponseDTO> issues) {
 
 }

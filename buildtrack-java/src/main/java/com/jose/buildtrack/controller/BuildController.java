@@ -10,14 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jose.buildtrack.domain.Build;
+import com.jose.buildtrack.domain.Issue;
+import com.jose.buildtrack.domain.IssueSeverity;
 import com.jose.buildtrack.domain.Platform;
 import com.jose.buildtrack.dto.BuildResponseDTO;
 import com.jose.buildtrack.dto.CreateBuildRequestDTO;
+import com.jose.buildtrack.dto.CreateIssueRequestDTO;
+import com.jose.buildtrack.dto.IssueResponseDTO;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
 import com.jose.buildtrack.exceptions.InvalidPlatformException;
 import com.jose.buildtrack.service.BuildService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/builds")
@@ -74,12 +79,41 @@ public class BuildController {
         return toResponseDTO(build);
     }
 
+    @PostMapping("/{id}/issues")
+    public BuildResponseDTO addIssue(
+            @PathVariable String id,
+            @Valid @RequestBody CreateIssueRequestDTO request
+    ) {
+        Build build = buildService.addIssueToBuild(
+                id,
+                request.id(),
+                request.title(),
+                parseIssueSeverity(request.severity())
+        );
+    
+        return toResponseDTO(build);
+    }
+
+    private IssueSeverity parseIssueSeverity(String severity) {
+        try {
+            return IssueSeverity.valueOf(severity.trim().toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("Invalid issue severity: " + severity);
+        }
+    }
+
     private BuildResponseDTO toResponseDTO(Build build) {
         return new BuildResponseDTO(
             build.getId(),
             build.getVersion().getValue(),
             build.getPlatform().name(),
-            build.getStatus().name()
+            build.getStatus().name(),
+                        build.getIssues()
+                    .stream()
+                    .map(this::toIssueResponseDTO)
+                    .toList()
+            
+            
         );
     }
 
@@ -90,5 +124,14 @@ public class BuildController {
             throw new InvalidPlatformException(platform);
         }
     }
+
+    private IssueResponseDTO toIssueResponseDTO(Issue issue) {
+        return new IssueResponseDTO(
+                issue.getId(),
+                issue.getTitle(),
+                issue.getSeverity().name(),
+                issue.getStatus().name()
+        );
+}
 
 }

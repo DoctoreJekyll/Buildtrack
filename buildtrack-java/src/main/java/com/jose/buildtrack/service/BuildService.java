@@ -2,6 +2,8 @@ package com.jose.buildtrack.service;
 
 import com.jose.buildtrack.domain.Build;
 import com.jose.buildtrack.domain.BuildVersion;
+import com.jose.buildtrack.domain.Issue;
+import com.jose.buildtrack.domain.IssueSeverity;
 import com.jose.buildtrack.domain.Platform;
 import com.jose.buildtrack.exceptions.BuildAlreadyExistException;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
@@ -70,6 +72,17 @@ public class BuildService {
         Build build = getBuildOrThrow(buildId);
 
         build.reject();
+
+        return build;
+    }
+
+    public Build addIssueToBuild(String buildId, String issueId, String title, IssueSeverity severity) {
+
+        Build build = getBuildOrThrow(buildId);
+
+        Issue issue = new Issue(issueId, title, severity);
+
+        build.addIssue(issue);
 
         return build;
     }
