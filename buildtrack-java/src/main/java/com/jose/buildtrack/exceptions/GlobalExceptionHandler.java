@@ -67,4 +67,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+	@ExceptionHandler(InvalidPlatformException.class)
+	public ResponseEntity<ErrorResponseDTO> handleInvalidPlatform(InvalidPlatformException exception) {
+
+		ErrorResponseDTO response = new ErrorResponseDTO(
+				HttpStatus.BAD_REQUEST.value(),
+				HttpStatus.BAD_REQUEST.getReasonPhrase(),
+				exception.getMessage()
+		);
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	}
 }

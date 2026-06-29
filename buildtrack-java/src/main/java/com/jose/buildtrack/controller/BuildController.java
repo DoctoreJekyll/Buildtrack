@@ -14,6 +14,7 @@ import com.jose.buildtrack.domain.Platform;
 import com.jose.buildtrack.dto.BuildResponseDTO;
 import com.jose.buildtrack.dto.CreateBuildRequestDTO;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
+import com.jose.buildtrack.exceptions.InvalidPlatformException;
 import com.jose.buildtrack.service.BuildService;
 
 import jakarta.validation.Valid;
@@ -33,7 +34,8 @@ public class BuildController {
         Build build = buildService.createBuild(
             request.id(), 
             request.version(), 
-            Platform.valueOf(request.platform().toUpperCase()));
+            parsePlatform(request.platform())
+        );
 
         return toResponseDTO(build);
     }
@@ -79,6 +81,14 @@ public class BuildController {
             build.getPlatform().name(),
             build.getStatus().name()
         );
+    }
+
+    private Platform parsePlatform(String platform) {
+        try {
+            return Platform.valueOf(platform.trim().toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new InvalidPlatformException(platform);
+        }
     }
 
 }
