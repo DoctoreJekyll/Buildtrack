@@ -16,6 +16,8 @@ import com.jose.buildtrack.dto.CreateBuildRequestDTO;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
 import com.jose.buildtrack.service.BuildService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/builds")
 public class BuildController {
@@ -26,7 +28,7 @@ public class BuildController {
     }
 
     @PostMapping
-    public BuildResponseDTO create(@RequestBody CreateBuildRequestDTO request)
+    public BuildResponseDTO create(@Valid @RequestBody CreateBuildRequestDTO request)
     {
         Build build = buildService.createBuild(
             request.id(), 
