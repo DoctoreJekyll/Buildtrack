@@ -22,7 +22,6 @@ import com.jose.buildtrack.exceptions.InvalidPlatformException;
 import com.jose.buildtrack.service.BuildService;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/builds")
