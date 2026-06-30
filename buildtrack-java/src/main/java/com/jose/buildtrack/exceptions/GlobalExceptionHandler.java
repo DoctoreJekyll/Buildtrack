@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
     }
 
 	@ExceptionHandler(InvalidPlatformException.class)
-	public ResponseEntity<ErrorResponseDTO> handleInvalidPlatform(InvalidPlatformException exception) {
+        public ResponseEntity<ErrorResponseDTO> handleInvalidPlatform(InvalidPlatformException exception) {
 
 		ErrorResponseDTO response = new ErrorResponseDTO(
 				HttpStatus.BAD_REQUEST.value(),
@@ -79,4 +79,16 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
+
+    @ExceptionHandler(IssueNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleIssueNotFound(IssueNotFoundException exception) {
+
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                exception.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
 }

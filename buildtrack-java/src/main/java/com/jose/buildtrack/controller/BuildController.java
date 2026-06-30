@@ -99,6 +99,21 @@ public class BuildController {
         return toResponseDTO(build);
     }
 
+    @GetMapping("/{buildId}/issues")
+    public List<IssueResponseDTO> getIssuesByBuild(@PathVariable String buildId) {
+        return buildService.getIssuesByBuildId(buildId)
+                .stream()
+                .map(this::toIssueResponseDTO)
+                .toList();
+    }
+
+    @GetMapping("/{buildId}/issues/{issueId}")
+    public IssueResponseDTO getIssueById(@PathVariable String buildId,@PathVariable String issueId) {
+        Issue issue = buildService.getIssueById(buildId, issueId);
+
+        return toIssueResponseDTO(issue);
+    }
+
     private IssueSeverity parseIssueSeverity(String severity) {
         try {
             return IssueSeverity.valueOf(severity.trim().toUpperCase());

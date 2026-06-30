@@ -7,6 +7,7 @@ import com.jose.buildtrack.domain.IssueSeverity;
 import com.jose.buildtrack.domain.Platform;
 import com.jose.buildtrack.exceptions.BuildAlreadyExistException;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
+import com.jose.buildtrack.exceptions.IssueNotFoundException;
 import com.jose.buildtrack.repository.BuildRepository;
 
 
@@ -25,7 +26,6 @@ public class BuildService {
     }
 
     public Build createBuild(String id, String version, Platform platform) {
-
         if (buildRepository.findById(id).isPresent()) {
             throw new BuildAlreadyExistException(id);
         }
@@ -59,7 +59,6 @@ public class BuildService {
     }
 
     public Build approveBuild(String buildId) {
-
         Build build = getBuildOrThrow(buildId);
 
         build.approve();
@@ -68,7 +67,6 @@ public class BuildService {
     }
 
     public Build rejectBuild(String buildId) {
-
         Build build = getBuildOrThrow(buildId);
 
         build.reject();
@@ -77,7 +75,6 @@ public class BuildService {
     }
 
     public Build addIssueToBuild(String buildId, String issueId, String title, IssueSeverity severity) {
-
         Build build = getBuildOrThrow(buildId);
 
         Issue issue = new Issue(issueId, title, severity);
@@ -88,11 +85,24 @@ public class BuildService {
     }
 
     public Build resolveIssue(String buildId, String issueId) {
-
         Build build = getBuildOrThrow(buildId);
 
         build.resolveIssue(issueId);
 
         return build;
     }
+
+    public List<Issue> getIssuesByBuildId(String buildId) {
+        Build build = getBuildOrThrow(buildId);
+
+        return build.getIssues();
+    }
+
+    public Issue getIssueById(String buildId, String issueId) {
+        Build build = getBuildOrThrow(buildId);
+        
+        return build.findIssueById(issueId)
+                .orElseThrow(() -> new IssueNotFoundException(issueId));
+    }
+    
 }
