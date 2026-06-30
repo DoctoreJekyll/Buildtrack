@@ -2,6 +2,7 @@ package com.jose.buildtrack.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Build {
 
@@ -117,6 +118,25 @@ public class Build {
                 throw new IllegalArgumentException("Issue ID must be unique within the build");
             }
         }
+    }
+
+    public Optional<Issue> findIssueById(String issueId) {
+        validateRequiredText(issueId, "Issue ID");
+
+        for (Issue issue : issues) {
+            if (issue.getId().equals(issueId)) {
+                return Optional.of(issue);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public void resolveIssue(String issueId) {
+        Issue issue = findIssueById(issueId)
+                .orElseThrow(() -> new IllegalArgumentException("Issue not found"));
+
+        issue.resolve();
     }
 
 }

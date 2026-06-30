@@ -86,4 +86,13 @@ public class BuildService {
 
         return build;
     }
+
+    public Build resolveIssue(String buildId, String issueId) {
+
+        Build build = getBuildOrThrow(buildId);
+
+        build.resolveIssue(issueId);
+
+        return build;
+    }
 }

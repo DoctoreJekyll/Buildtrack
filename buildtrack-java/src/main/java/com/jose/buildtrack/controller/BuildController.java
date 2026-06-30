@@ -93,6 +93,12 @@ public class BuildController {
         return toResponseDTO(build);
     }
 
+    @PostMapping("/{buildId}/issues/{issueId}/resolve")
+    public BuildResponseDTO resolveIssue(@PathVariable String buildId, @PathVariable String issueId) {
+        Build build = buildService.resolveIssue(buildId, issueId);
+        return toResponseDTO(build);
+    }
+
     private IssueSeverity parseIssueSeverity(String severity) {
         try {
             return IssueSeverity.valueOf(severity.trim().toUpperCase());
