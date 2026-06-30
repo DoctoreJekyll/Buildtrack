@@ -91,4 +91,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+
+    @ExceptionHandler(InvalidIssueSeverityException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidIssueSeverity(InvalidIssueSeverityException exception) {
+
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                exception.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 }
