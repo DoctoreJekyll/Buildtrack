@@ -52,7 +52,7 @@ public class BuildService {
         return build;
     }
 
-    private Build getBuildOrThrow(String buildId) {
+    public Build getBuildOrThrow(String buildId) {
         Build build = findBuildById(buildId)
                 .orElseThrow(() -> new BuildNotFoundException(buildId));
         return build;
@@ -100,7 +100,7 @@ public class BuildService {
 
     public Issue getIssueById(String buildId, String issueId) {
         Build build = getBuildOrThrow(buildId);
-        
+
         return build.findIssueById(issueId)
                 .orElseThrow(() -> new IssueNotFoundException(issueId));
     }
