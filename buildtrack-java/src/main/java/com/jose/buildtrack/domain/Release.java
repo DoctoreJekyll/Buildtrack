@@ -10,6 +10,16 @@ public class Release {
     private final List<Build> builds;
     private ReleaseStatus status;
 
+    public Release(String id, String name) {
+        validateRequiredText(id, "ID");
+        validateRequiredText(name, "Name");
+
+        this.id = id;
+        this.name = name;
+        this.builds = new ArrayList<>();
+        this.status = ReleaseStatus.DRAFT;
+    }
+
     public Release(String id, String name, List<Build> builds) {
         validateRequiredText(id, "ID");
         validateRequiredText(name, "Name");
@@ -56,6 +66,12 @@ public class Release {
             throw new IllegalArgumentException("Build cannot be null");
         }
 
+        if (status != ReleaseStatus.DRAFT) {
+            throw new IllegalStateException("Builds can only be added when release is in DRAFT status");
+        }
+
+        verifyUniqueBuild(build);
+
         builds.add(build);
     }
 
@@ -64,9 +80,11 @@ public class Release {
             throw new IllegalStateException("Release must be in DRAFT status");
         }
 
+        ensureHasBuilds();
+
         if (!allBuildsApproved() || hasAnyBlockingIssues()) {
             throw new IllegalStateException(
-                "Cannot move to READY: builds not approved or have blocking issues"
+                    "Cannot move to READY: builds not approved or have blocking issues"
             );
         }
 
@@ -78,6 +96,8 @@ public class Release {
             throw new IllegalStateException("Release must be in READY status to publish");
         }
 
+        ensureHasBuilds();
+
         if (!allBuildsApproved() || hasAnyBlockingIssues()) {
             throw new IllegalStateException("Release cannot be published due to validation rules");
         }
@@ -85,13 +105,24 @@ public class Release {
         this.status = ReleaseStatus.PUBLISHED;
     }
 
+    private void verifyUniqueBuild(Build buildToAdd) {
+        for (Build build : builds) {
+            if (build.getId().equals(buildToAdd.getId())) {
+                throw new IllegalArgumentException("Build is already added to this release");
+            }
+        }
+    }
+
+    private void ensureHasBuilds() {
+        if (builds.isEmpty()) {
+            throw new IllegalStateException("Release must contain at least one build");
+        }
+    }
+
     private boolean hasAnyBlockingIssues() {
         for (Build build : builds) {
-            for (Issue issue : build.getIssues()) {
-                if (issue.getSeverity() == IssueSeverity.BLOCKER
-                        && issue.getStatus() == IssueStatus.OPEN) {
-                    return true;
-                }
+            if (build.hasOpenBlockerIssues()) {
+                return true;
             }
         }
         return false;
