@@ -104,4 +104,28 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(ReleaseNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleReleaseNotFound(ReleaseNotFoundException exception) {
+
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                exception.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(ReleaseAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleReleaseAlreadyExists(ReleaseAlreadyExistsException exception) {
+
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                exception.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
 }

@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.jose.buildtrack.domain.Release;
+import com.jose.buildtrack.exceptions.ReleaseAlreadyExistsException;
+import com.jose.buildtrack.exceptions.ReleaseNotFoundException;
 import com.jose.buildtrack.repository.ReleaseRepository;
 
 @Service
@@ -17,13 +19,23 @@ public class ReleaseService {
         this.releaseRepository = releaseRepository;
     }
 
+    public Release createRelease(String id, String name) {
+
+        if (releaseRepository.findById(id).isPresent()) {
+            throw new ReleaseAlreadyExistsException(id);
+        }
+
+        Release release = new Release(id, name);
+
+        return releaseRepository.save(release);
+    }
+
     public Optional<Release> findReleaseById(String releaseId) {
         return releaseRepository.findById(releaseId);
     }
 
-    public Release createRelease(String id, String name) {
-        Release release = new Release(id, name);
-        return releaseRepository.save(release);
+    public Release getReleaseById(String releaseId) {
+        return getReleaseOrThrow(releaseId);
     }
 
     public List<Release> getAllReleases() {
@@ -37,7 +49,6 @@ public class ReleaseService {
 
     private Release getReleaseOrThrow(String releaseId) {
         return releaseRepository.findById(releaseId)
-                .orElseThrow(() -> new RuntimeException("Release not found: " + releaseId));
+                .orElseThrow(() -> new ReleaseNotFoundException(releaseId));
     }
-
 }
