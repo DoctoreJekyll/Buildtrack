@@ -1,22 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.jose.buildtrack.service.ReleaseServiceTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.020 s <<< FAILURE! -- in com.jose.buildtrack.service.ReleaseServiceTest
-com.jose.buildtrack.service.ReleaseServiceTest.shouldPrepareReleaseWhenBuildIsApproved -- Time elapsed: 0.002 s <<< ERROR!
-java.lang.IllegalStateException: Build must be in VALIDATING status to approve and have no open blocker issues
-	at com.jose.buildtrack.domain.Build.approve(Build.java:77)
-	at com.jose.buildtrack.service.BuildService.approveBuild(BuildService.java:64)
-	at com.jose.buildtrack.service.ReleaseServiceTest.shouldPrepareReleaseWhenBuildIsApproved(ReleaseServiceTest.java:98)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
-com.jose.buildtrack.service.ReleaseServiceTest.shouldPublishReleaseAfterPreparation -- Time elapsed: 0.001 s <<< ERROR!
-java.lang.IllegalStateException: Build must be in VALIDATING status to approve and have no open blocker issues
-	at com.jose.buildtrack.domain.Build.approve(Build.java:77)
-	at com.jose.buildtrack.service.BuildService.approveBuild(BuildService.java:64)
-	at com.jose.buildtrack.service.ReleaseServiceTest.shouldPublishReleaseAfterPreparation(ReleaseServiceTest.java:118)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.jose.buildtrack.service.ReleaseServiceTest

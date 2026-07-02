@@ -1,23 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.jose.buildtrack.domain.BuildTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 1, Errors: 1, Skipped: 0, Time elapsed: 0.029 s <<< FAILURE! -- in com.jose.buildtrack.domain.BuildTest
-com.jose.buildtrack.domain.BuildTest.shouldRejectApprovalWhenBuildHasOpenBlockerIssue -- Time elapsed: 0.008 s <<< FAILURE!
-org.opentest4j.AssertionFailedError: Expected java.lang.IllegalStateException to be thrown, but nothing was thrown.
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
-	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
-	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
-	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3128)
-	at com.jose.buildtrack.domain.BuildTest.shouldRejectApprovalWhenBuildHasOpenBlockerIssue(BuildTest.java:56)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
-com.jose.buildtrack.domain.BuildTest.shouldApproveBuildWhenBlockerIssueIsResolved -- Time elapsed: 0.003 s <<< ERROR!
-java.lang.IllegalStateException: Build must be in VALIDATING status to approve and have no open blocker issues
-	at com.jose.buildtrack.domain.Build.approve(Build.java:77)
-	at com.jose.buildtrack.domain.BuildTest.shouldApproveBuildWhenBlockerIssueIsResolved(BuildTest.java:79)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.020 s -- in com.jose.buildtrack.domain.BuildTest
