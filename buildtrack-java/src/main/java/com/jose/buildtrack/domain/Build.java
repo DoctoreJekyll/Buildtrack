@@ -73,7 +73,7 @@ public class Build {
     }
 
     public void approve() {
-        if (status != BuildStatus.VALIDATING || !hasOpenBlockerIssues()) {
+        if (status != BuildStatus.VALIDATING || hasOpenBlockerIssues()) {
             throw new IllegalStateException("Build must be in VALIDATING status to approve and have no open blocker issues");
         }
 

@@ -40,8 +40,7 @@ public class BuildTest {
     }
 
     @Test
-    void shouldRejectApprovalWhenBuildHasOpenBlockerIssue()
-    {
+    void shouldRejectApprovalWhenBuildHasOpenBlockerIssue() {
         Build build = new Build(
                 "build-001",
                 new BuildVersion("1.0.0"),
@@ -51,10 +50,15 @@ public class BuildTest {
         build.startValidation();
         build.addIssue(new Issue("ISSUE-001", "Blocker issue", IssueSeverity.BLOCKER));
 
+        assertEquals(BuildStatus.VALIDATING, build.getStatus());
+        assertTrue(build.hasOpenBlockerIssues());
+
         assertThrows(
                 IllegalStateException.class,
                 build::approve
         );
+
+        assertEquals(BuildStatus.VALIDATING, build.getStatus());
     }
 
     @Test
@@ -69,7 +73,12 @@ public class BuildTest {
         build.addIssue(new Issue("ISSUE-001", "Blocker issue", IssueSeverity.BLOCKER));
         build.resolveIssue("ISSUE-001");
 
-        assertDoesNotThrow(build::approve);
+        assertEquals(BuildStatus.VALIDATING, build.getStatus());
+        assertFalse(build.hasOpenBlockerIssues());
+
+        build.approve();
+
+        assertEquals(BuildStatus.APPROVED, build.getStatus());
     }
 
     @Test

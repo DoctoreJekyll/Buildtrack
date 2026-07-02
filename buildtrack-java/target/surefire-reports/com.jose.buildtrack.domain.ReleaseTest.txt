@@ -1,0 +1,28 @@
+-------------------------------------------------------------------------------
+Test set: com.jose.buildtrack.domain.ReleaseTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.021 s <<< FAILURE! -- in com.jose.buildtrack.domain.ReleaseTest
+com.jose.buildtrack.domain.ReleaseTest.shouldRejectAddingBuildWhenReleaseIsReady -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.IllegalStateException: Build must be in VALIDATING status to approve and have no open blocker issues
+	at com.jose.buildtrack.domain.Build.approve(Build.java:77)
+	at com.jose.buildtrack.domain.ReleaseTest.shouldRejectAddingBuildWhenReleaseIsReady(ReleaseTest.java:117)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jose.buildtrack.domain.ReleaseTest.shouldPublishWhenReleaseIsReady -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.IllegalStateException: Build must be in VALIDATING status to approve and have no open blocker issues
+	at com.jose.buildtrack.domain.Build.approve(Build.java:77)
+	at com.jose.buildtrack.domain.ReleaseTest.shouldPublishWhenReleaseIsReady(ReleaseTest.java:71)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.jose.buildtrack.domain.ReleaseTest.shouldMoveToReadyWhenAllBuildsAreApproved -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.IllegalStateException: Build must be in VALIDATING status to approve and have no open blocker issues
+	at com.jose.buildtrack.domain.Build.approve(Build.java:77)
+	at com.jose.buildtrack.domain.ReleaseTest.shouldMoveToReadyWhenAllBuildsAreApproved(ReleaseTest.java:53)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

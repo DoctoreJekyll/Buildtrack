@@ -55,7 +55,7 @@ public class ReleaseTest {
         release.addBuild(build);
         release.startPreparation();
 
-        assert(release.getStatus() == ReleaseStatus.READY);
+        assertEquals(ReleaseStatus.READY, release.getStatus());    
     }
 
     @Test
