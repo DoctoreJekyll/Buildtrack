@@ -1,5 +1,6 @@
 com\jose\buildtrack\AppTest.class
 com\jose\buildtrack\service\ReleaseServiceTest.class
+com\jose\buildtrack\controller\BuildControllerTest.class
 com\jose\buildtrack\domain\BuildVersionTest.class
 com\jose\buildtrack\domain\ReleaseTest.class
 com\jose\buildtrack\domain\BuildTest.class

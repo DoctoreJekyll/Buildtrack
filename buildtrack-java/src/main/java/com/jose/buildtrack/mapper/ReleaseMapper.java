@@ -2,12 +2,15 @@ package com.jose.buildtrack.mapper;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.jose.buildtrack.domain.Issue;
 import com.jose.buildtrack.domain.Release;
 import com.jose.buildtrack.dto.BuildResponseDTO;
 import com.jose.buildtrack.dto.IssueResponseDTO;
 import com.jose.buildtrack.dto.ReleaseResponseDTO;
 
+@Component
 public class ReleaseMapper {
 
     public ReleaseResponseDTO toReleaseResponseDTO(Release release) {

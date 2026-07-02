@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+Test set: com.jose.buildtrack.controller.BuildControllerTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 3.587 s <<< FAILURE! -- in com.jose.buildtrack.controller.BuildControllerTest
+com.jose.buildtrack.controller.BuildControllerTest.shouldRejectBuildCreationWhenIdIsBlank -- Time elapsed: 0.018 s <<< FAILURE!
+java.lang.AssertionError: JSON path "$.message" expected:<Build ID is required> but was:<id cannot be blank>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:61)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:128)
+	at org.springframework.test.util.JsonPathExpectationsHelper.assertValue(JsonPathExpectationsHelper.java:172)
+	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$value$2(JsonPathResultMatchers.java:112)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.jose.buildtrack.controller.BuildControllerTest.shouldRejectBuildCreationWhenIdIsBlank(BuildControllerTest.java:200)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.jose.buildtrack.AppTest" time="0.05" tests="1" errors="0" skipped="0" failures="0" flakes="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.jose.buildtrack.controller.BuildControllerTest" time="3.587" tests="3" errors="0" skipped="0" failures="1" flakes="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -9,6 +9,8 @@
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
     <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="user.timezone" value="Europe/Madrid"/>
+    <property name="org.jboss.logging.provider" value="slf4j"/>
     <property name="os.name" value="Windows 11"/>
     <property name="java.vm.specification.version" value="21"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
@@ -29,6 +31,8 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="java.awt.headless" value="true"/>
     <property name="surefire.real.class.path" value="C:\Users\jarma\AppData\Local\Temp\surefire14782502838284446671\surefirebooter-20260702172322052_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
@@ -47,7 +51,9 @@
     <property name="user.dir" value="C:\Users\jarma\Desktop\Buildtrack\buildtrack-java"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="35824"/>
     <property name="sun.os.patch.level" value=""/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
     <property name="native.encoding" value="Cp1252"/>
     <property name="java.library.path" value="C:\Program Files\Java\jdk-21\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;c:\Users\jarma\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand;c:\Users\jarma\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\copilotCli;C:\Python313\Scripts\;C:\Python313\;C:\Program Files\Java\jdk-21\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA app\NvDLISR;C:\Program Files\Git\cmd;C:\Program Files\Apache\Maven\apache-maven-3.9.9\bin;C:\Program Files\Calibre2\;;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\chocolatey\bin;C:\Program Files\nodejs\;C:\Program Files\dotnet\;C:\Users\jarma\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\JetBrains Rider 2024.3.2\bin;C:\Users\jarma\AppData\Local\GitHubDesktop\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2024.3.1.1\bin;C:\Users\jarma\.dotnet\tools;C:\Program Files\JetBrains\IntelliJ IDEA 2024.3.5\bin;C:\Users\jarma\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\jarma\AppData\Local\JetBrains\Toolbox\scripts;C:\Users\jarma\AppData\Roaming\npm;C:\Users\jarma\AppData\Roaming\npm\node_modules;;C:\Users\jarma\.fly\bin;c:\Users\jarma\.vscode\extensions\vscjava.vscode-java-debug-0.59.0\bundled\scripts\noConfigScripts;."/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
@@ -57,5 +63,89 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="shouldAnswerWithTrue" classname="com.jose.buildtrack.AppTest" time="0.03"/>
+  <testcase name="shouldCreateBuild" classname="com.jose.buildtrack.controller.BuildControllerTest" time="0.874">
+    <system-out><![CDATA[17:23:22.851 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.jose.buildtrack.controller.BuildControllerTest]: BuildControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:23:23.010 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.jose.buildtrack.BuildtrackApplication for test class com.jose.buildtrack.controller.BuildControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-07-02T17:23:23.446+02:00  INFO 35824 --- [           main] c.j.b.controller.BuildControllerTest     : Starting BuildControllerTest using Java 21.0.6 with PID 35824 (started by jarma in C:\Users\jarma\Desktop\Buildtrack\buildtrack-java)
+2026-07-02T17:23:23.447+02:00  INFO 35824 --- [           main] c.j.b.controller.BuildControllerTest     : No active profile set, falling back to 1 default profile: "default"
+2026-07-02T17:23:25.148+02:00  INFO 35824 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-07-02T17:23:25.148+02:00  INFO 35824 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-07-02T17:23:25.157+02:00  INFO 35824 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-07-02T17:23:25.167+02:00  INFO 35824 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 18 ms
+2026-07-02T17:23:25.223+02:00  INFO 35824 --- [           main] c.j.b.controller.BuildControllerTest     : Started BuildControllerTest in 2.081 seconds (process running for 3.071)
+]]></system-out>
+    <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\jarma\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+  </testcase>
+  <testcase name="shouldRejectBuildCreationWhenPlatformIsInvalid" classname="com.jose.buildtrack.controller.BuildControllerTest" time="0.014"/>
+  <testcase name="shouldRejectBuildCreationWhenIdIsBlank" classname="com.jose.buildtrack.controller.BuildControllerTest" time="0.018">
+    <failure message="JSON path &quot;$.message&quot; expected:&lt;Build ID is required&gt; but was:&lt;id cannot be blank&gt;" type="java.lang.AssertionError"><![CDATA[java.lang.AssertionError: JSON path "$.message" expected:<Build ID is required> but was:<id cannot be blank>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:61)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:128)
+	at org.springframework.test.util.JsonPathExpectationsHelper.assertValue(JsonPathExpectationsHelper.java:172)
+	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$value$2(JsonPathResultMatchers.java:112)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.jose.buildtrack.controller.BuildControllerTest.shouldRejectBuildCreationWhenIdIsBlank(BuildControllerTest.java:200)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+    <system-out><![CDATA[
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /builds
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"62"]
+             Body = {
+  "id": "",
+  "version": "1.0.0",
+  "platform": "WINDOWS"
+}
+
+    Session Attrs = {}
+
+Handler:
+             Type = com.jose.buildtrack.controller.BuildController
+           Method = com.jose.buildtrack.controller.BuildController#create(CreateBuildRequestDTO)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = org.springframework.web.bind.MethodArgumentNotValidException
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 400
+    Error message = null
+          Headers = [Content-Type:"application/json"]
+     Content type = application/json
+             Body = {"status":400,"error":"Bad Request","message":"id cannot be blank"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  </testcase>
 </testsuite>
