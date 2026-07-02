@@ -27,6 +27,13 @@ public class ReleaseRepository {
     }
 
     public Release save(Release release) {
+        for (int i = 0; i < releases.size(); i++) {
+            if (releases.get(i).getId().equals(release.getId())) {
+                releases.set(i, release);
+                return release;
+            }
+        }
+
         releases.add(release);
         return release;
     }
