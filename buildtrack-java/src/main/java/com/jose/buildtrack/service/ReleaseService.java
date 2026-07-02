@@ -60,6 +60,18 @@ public class ReleaseService {
         return releaseRepository.save(release);
     }
 
+    public Release prepareRelease(String releaseId) {
+        Release release = getReleaseOrThrow(releaseId);
+        release.startPreparation();
+        return releaseRepository.save(release);
+    }
+
+    public Release publishRelease(String releaseId) {
+        Release release = getReleaseOrThrow(releaseId);
+        release.publish();
+        return releaseRepository.save(release);
+    }
+
     private Release getReleaseOrThrow(String releaseId) {
         return releaseRepository.findById(releaseId)
                 .orElseThrow(() -> new ReleaseNotFoundException(releaseId));

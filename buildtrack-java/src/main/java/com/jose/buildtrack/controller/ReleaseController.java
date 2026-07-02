@@ -48,6 +48,19 @@ public class ReleaseController {
         Release release = releaseService.addBuildToRelease(releaseId, buildId);
         return releaseMapper.toReleaseResponseDTO(release);
     }
+
+    @PostMapping("/{releaseId}/prepare")
+    public ReleaseResponseDTO prepareRelease(@PathVariable String releaseId) {
+        Release release = releaseService.prepareRelease(releaseId);
+        return releaseMapper.toReleaseResponseDTO(release);
+    }
+
+
+    @PostMapping("/{releaseId}/publish")
+    public ReleaseResponseDTO publishRelease(@PathVariable String releaseId) {
+        Release release = releaseService.publishRelease(releaseId);
+        return releaseMapper.toReleaseResponseDTO(release);
+    }
     
 
     @GetMapping
