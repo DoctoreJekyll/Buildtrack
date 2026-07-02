@@ -3,7 +3,7 @@ package com.jose.buildtrack.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public record CreateBuildRequestDTO(
-    @NotBlank(message = "id cannot be blank")
+    @NotBlank(message = "Build ID is required")
     String id, 
     @NotBlank(message = "version cannot be blank")
     String version, 
