@@ -43,6 +43,13 @@ public class ReleaseController {
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
+    @PostMapping("/{releaseId}/builds/{buildId}")
+    public ReleaseResponseDTO addBuildToRelease(@PathVariable String releaseId, @PathVariable String buildId) {
+        Release release = releaseService.addBuildToRelease(releaseId, buildId);
+        return releaseMapper.toReleaseResponseDTO(release);
+    }
+    
+
     @GetMapping
     public List<ReleaseResponseDTO> getAllReleases() {
 

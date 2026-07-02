@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.jose.buildtrack.domain.Build;
 import com.jose.buildtrack.domain.Release;
+import com.jose.buildtrack.exceptions.BuildNotFoundException;
 import com.jose.buildtrack.exceptions.ReleaseAlreadyExistsException;
 import com.jose.buildtrack.exceptions.ReleaseNotFoundException;
 import com.jose.buildtrack.repository.ReleaseRepository;
@@ -14,9 +16,11 @@ import com.jose.buildtrack.repository.ReleaseRepository;
 public class ReleaseService {
 
     private final ReleaseRepository releaseRepository;
+    private final BuildService buildService;
 
-    public ReleaseService(ReleaseRepository releaseRepository) {
+    public ReleaseService(ReleaseRepository releaseRepository, BuildService buildService) {
         this.releaseRepository = releaseRepository;
+        this.buildService = buildService;
     }
 
     public Release createRelease(String id, String name) {
@@ -47,8 +51,18 @@ public class ReleaseService {
         releaseRepository.delete(release);
     }
 
+    public Release addBuildToRelease(String releaseId, String buildId) {
+        Release release = getReleaseOrThrow(releaseId);
+        Optional<Build> optBuild = buildService.findBuildById(buildId);
+        Build build = optBuild.orElseThrow(() -> new BuildNotFoundException(buildId));
+
+        release.addBuild(build);
+        return releaseRepository.save(release);
+    }
+
     private Release getReleaseOrThrow(String releaseId) {
         return releaseRepository.findById(releaseId)
                 .orElseThrow(() -> new ReleaseNotFoundException(releaseId));
     }
+    
 }
