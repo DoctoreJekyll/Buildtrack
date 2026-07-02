@@ -27,6 +27,7 @@ public class BuildTest {
 
     @Test
     void shouldStartValidationWhenBuildIsCreated() {
+
         Build build = new Build(
                 "build-001",
                 new BuildVersion("1.0.0"),
@@ -37,4 +38,55 @@ public class BuildTest {
 
         assertEquals(BuildStatus.VALIDATING, build.getStatus());
     }
+
+    @Test
+    void shouldRejectApprovalWhenBuildHasOpenBlockerIssue()
+    {
+        Build build = new Build(
+                "build-001",
+                new BuildVersion("1.0.0"),
+                Platform.WINDOWS
+        );
+
+        build.startValidation();
+        build.addIssue(new Issue("ISSUE-001", "Blocker issue", IssueSeverity.BLOCKER));
+
+        assertThrows(
+                IllegalStateException.class,
+                build::approve
+        );
+    }
+
+    @Test
+    void shouldApproveBuildWhenBlockerIssueIsResolved() {
+        Build build = new Build(
+                "build-001",
+                new BuildVersion("1.0.0"),
+                Platform.WINDOWS
+        );
+
+        build.startValidation();
+        build.addIssue(new Issue("ISSUE-001", "Blocker issue", IssueSeverity.BLOCKER));
+        build.resolveIssue("ISSUE-001");
+
+        assertDoesNotThrow(build::approve);
+    }
+
+    @Test
+    void shouldRejectDuplicatedIssueId() {
+        Build build = new Build(
+                "build-001",
+                new BuildVersion("1.0.0"),
+                Platform.WINDOWS
+        );
+
+        build.startValidation();
+        build.addIssue(new Issue("ISSUE-001", "Blocker issue", IssueSeverity.BLOCKER));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> build.addIssue(new Issue("ISSUE-001", "Another issue with same ID", IssueSeverity.LOW))
+        );
+    }
+
 }
