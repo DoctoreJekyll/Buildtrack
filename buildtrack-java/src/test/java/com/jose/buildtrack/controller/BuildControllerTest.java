@@ -151,7 +151,6 @@ class BuildControllerTest {
                      */
                     .andExpect(jsonPath("$.status").value("CREATED"));
         } else {
-            // TODO handle null value
         }
     }
 
@@ -206,7 +205,6 @@ class BuildControllerTest {
                      */
                     .andExpect(jsonPath("$.message").value("Build ID is required"));
         } else {
-            // TODO handle null value
         }
     }
 
@@ -259,7 +257,7 @@ class BuildControllerTest {
                      */
                     .andExpect(jsonPath("$.message").value("Invalid platform: PLAYSTATION"));
         } else {
-            // TODO handle null value
+
         }
     }
 }
