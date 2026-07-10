@@ -67,19 +67,24 @@ class ReleaseControllerTest {
          * funciona de extremo a extremo a nivel API.
          */
 
-        // 1. Crear build
-        mockMvc.perform(post("/builds")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "id": "B-REL-001",
-                                  "version": "1.0.0",
-                                  "platform": "WINDOWS"
-                                }
-                                """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("B-REL-001"))
-                .andExpect(jsonPath("$.status").value("CREATED"));
+        final MediaType application_JSON2 = MediaType.APPLICATION_JSON;
+        if (application_JSON2 != null) {
+                // 1. Crear build
+                mockMvc.perform(post("/builds")
+                                .contentType(application_JSON2)
+                                .content("""
+                                        {
+                                          "id": "B-REL-001",
+                                          "version": "1.0.0",
+                                          "platform": "WINDOWS"
+                                        }
+                                        """))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value("B-REL-001"))
+                        .andExpect(jsonPath("$.status").value("CREATED"));
+        } else {
+                // TODO handle null value
+        }
 
         /*
          * 2. Pasar la build a VALIDATING.
@@ -103,23 +108,28 @@ class ReleaseControllerTest {
                 .andExpect(jsonPath("$.id").value("B-REL-001"))
                 .andExpect(jsonPath("$.status").value("APPROVED"));
 
-        /*
-         * 4. Crear release.
-         *
-         * Una release recién creada empieza en DRAFT
-         * y todavía no tiene builds asociadas.
-         */
-        mockMvc.perform(post("/releases")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "id": "R-MOCK-001",
-                                  "name": "Release 1.0.0"
-                                }
-                                """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("R-MOCK-001"))
-                .andExpect(jsonPath("$.status").value("DRAFT"));
+        final MediaType application_JSON3 = MediaType.APPLICATION_JSON;
+        if (application_JSON3 != null) {
+                /*
+                 * 4. Crear release.
+                 *
+                 * Una release recién creada empieza en DRAFT
+                 * y todavía no tiene builds asociadas.
+                 */
+                mockMvc.perform(post("/releases")
+                                .contentType(application_JSON3)
+                                .content("""
+                                        {
+                                          "id": "R-MOCK-001",
+                                          "name": "Release 1.0.0"
+                                        }
+                                        """))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value("R-MOCK-001"))
+                        .andExpect(jsonPath("$.status").value("DRAFT"));
+        } else {
+                // TODO handle null value
+        }
 
         /*
          * 5. Añadir la build aprobada a la release.
@@ -177,18 +187,23 @@ class ReleaseControllerTest {
          * Aunque esté en DRAFT, necesita al menos una build.
          */
 
-        // Creamos una release sin builds
-        mockMvc.perform(post("/releases")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "id": "R-MOCK-EMPTY",
-                                  "name": "Empty Release"
-                                }
-                                """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("R-MOCK-EMPTY"))
-                .andExpect(jsonPath("$.status").value("DRAFT"));
+        final MediaType application_JSON2 = MediaType.APPLICATION_JSON;
+        if (application_JSON2 != null) {
+                // Creamos una release sin builds
+                mockMvc.perform(post("/releases")
+                                .contentType(application_JSON2)
+                                .content("""
+                                        {
+                                          "id": "R-MOCK-EMPTY",
+                                          "name": "Empty Release"
+                                        }
+                                        """))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value("R-MOCK-EMPTY"))
+                        .andExpect(jsonPath("$.status").value("DRAFT"));
+        } else {
+                // TODO handle null value
+        }
 
         /*
          * Intentamos prepararla.
@@ -215,18 +230,23 @@ class ReleaseControllerTest {
          * Es importante porque ReleaseService conecta Release con BuildService.
          */
 
-        // Creamos una release válida
-        mockMvc.perform(post("/releases")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "id": "R-MOCK-UNKNOWN-BUILD",
-                                  "name": "Release With Unknown Build"
-                                }
-                                """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("R-MOCK-UNKNOWN-BUILD"))
-                .andExpect(jsonPath("$.status").value("DRAFT"));
+        final MediaType application_JSON2 = MediaType.APPLICATION_JSON;
+        if (application_JSON2 != null) {
+                // Creamos una release válida
+                mockMvc.perform(post("/releases")
+                                .contentType(application_JSON2)
+                                .content("""
+                                        {
+                                          "id": "R-MOCK-UNKNOWN-BUILD",
+                                          "name": "Release With Unknown Build"
+                                        }
+                                        """))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.id").value("R-MOCK-UNKNOWN-BUILD"))
+                        .andExpect(jsonPath("$.status").value("DRAFT"));
+        } else {
+                // TODO handle null value
+        }
 
         /*
          * Intentamos añadir una build inexistente.
