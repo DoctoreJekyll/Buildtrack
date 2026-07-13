@@ -27,7 +27,7 @@ public class ReleaseTest {
     void shouldRejectPreparationWhenBuildIsNotApproved () {
         Release release = new Release("release-001", "Release 1.0");
         Build build = new Build(
-                "build-001",
+                1,
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );
@@ -44,7 +44,7 @@ public class ReleaseTest {
     void shouldMoveToReadyWhenAllBuildsAreApproved() {
         Release release = new Release("release-001", "Release 1.0");
         Build build = new Build(
-                "build-001",
+                1,
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );
@@ -62,7 +62,7 @@ public class ReleaseTest {
     void shouldPublishWhenReleaseIsReady(){
         Release release = new Release("release-001", "Release 1.0");
         Build build = new Build(
-                "build-001",
+                1,
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );
@@ -91,7 +91,7 @@ public class ReleaseTest {
     void shouldRejectDuplicatedBuildId() {
         Release release = new Release("release-001", "Release 1.0");
         Build build = new Build(
-                "build-001",
+                1,
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );
@@ -108,7 +108,7 @@ public class ReleaseTest {
     void shouldRejectAddingBuildWhenReleaseIsReady() {
         Release release = new Release("release-001", "Release 1.0");
         Build build = new Build(
-                "build-001",
+                1,
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );

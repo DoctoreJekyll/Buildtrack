@@ -26,7 +26,7 @@ public class BuildVersionTest {
         BuildVersion version = new BuildVersion("1.0.0");
 
         // Act
-        Build build = new Build("build-001", version, Platform.WINDOWS);
+        Build build = new Build(1, version, Platform.WINDOWS);
 
         // Assert
         assertEquals(BuildStatus.CREATED, build.getStatus());

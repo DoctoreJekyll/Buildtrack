@@ -3,7 +3,7 @@ package com.jose.buildtrack.dto;
 import java.util.List;
 
 public record BuildResponseDTO(
-    String id, 
+    Integer id, 
     String version, 
     String platform, 
     String status,
