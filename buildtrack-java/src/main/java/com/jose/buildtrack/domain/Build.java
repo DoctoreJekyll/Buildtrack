@@ -4,8 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Build {
 
+    @Id
     private final String id;
     private final BuildVersion version;
     private BuildStatus status;

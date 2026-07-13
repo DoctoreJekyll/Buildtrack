@@ -4,21 +4,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jose.buildtrack.domain.Release;
 import com.jose.buildtrack.domain.ReleaseStatus;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
 import com.jose.buildtrack.exceptions.ReleaseAlreadyExistsException;
-import com.jose.buildtrack.repository.BuildRepository;
 import com.jose.buildtrack.repository.ReleaseRepository;
 
 public class ReleaseServiceTest {
 
+    @Autowired
+    BuildService buildService;
     
-    private BuildService createBuildService() {
-        BuildRepository buildRepository = new BuildRepository();
-        return new BuildService(buildRepository);
-    }
 
     private ReleaseService createReleaseService(BuildService buildService) {
         ReleaseRepository releaseRepository = new ReleaseRepository();
@@ -28,7 +26,6 @@ public class ReleaseServiceTest {
     @Test
     void shouldCreateRelease() {
         // Arrange
-        BuildService buildService = createBuildService();
         ReleaseService releaseService = createReleaseService(buildService);
 
         // Act
@@ -43,7 +40,6 @@ public class ReleaseServiceTest {
     @Test
     void shouldRejectDuplicatedReleaseId() {
         // Arrange
-        BuildService buildService = createBuildService();
         ReleaseService releaseService = createReleaseService(buildService);
 
         releaseService.createRelease("release-001", "Release 1.0");
@@ -58,7 +54,6 @@ public class ReleaseServiceTest {
     @Test
     void shouldAddExistingBuildToRelease() {
         // Arrange
-        BuildService buildService = createBuildService();
         ReleaseService releaseService = createReleaseService(buildService);
 
         buildService.createBuild("build-001", "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
@@ -75,7 +70,6 @@ public class ReleaseServiceTest {
     @Test
     void shouldRejectAddingUnknownBuildToRelease() {
         // Arrange
-        BuildService buildService = createBuildService();
         ReleaseService releaseService = createReleaseService(buildService);
 
         releaseService.createRelease("release-001", "Release 1.0");
@@ -90,7 +84,6 @@ public class ReleaseServiceTest {
     @Test
     void shouldPrepareReleaseWhenBuildIsApproved() {
         // Arrange
-        BuildService buildService = createBuildService();
         ReleaseService releaseService = createReleaseService(buildService);
 
         buildService.createBuild("build-001", "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
@@ -110,7 +103,6 @@ public class ReleaseServiceTest {
     @Test
     void shouldPublishReleaseAfterPreparation() {
         // Arrange
-        BuildService buildService = createBuildService();
         ReleaseService releaseService = createReleaseService(buildService);
 
         buildService.createBuild("build-001", "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
