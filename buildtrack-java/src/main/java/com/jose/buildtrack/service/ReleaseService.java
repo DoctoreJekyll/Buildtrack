@@ -3,6 +3,7 @@ package com.jose.buildtrack.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.jose.buildtrack.domain.Build;
@@ -51,7 +52,7 @@ public class ReleaseService {
         releaseRepository.delete(release);
     }
 
-    public Release addBuildToRelease(String releaseId, String buildId) {
+    public Release addBuildToRelease(String releaseId, @NonNull String buildId) {
         Release release = getReleaseOrThrow(releaseId);
         Optional<Build> optBuild = buildService.findBuildById(buildId);
         Build build = optBuild.orElseThrow(() -> new BuildNotFoundException(buildId));

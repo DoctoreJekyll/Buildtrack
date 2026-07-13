@@ -14,6 +14,7 @@ import com.jose.buildtrack.repository.BuildRepository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +26,7 @@ public class BuildService {
         this.buildRepository = buildRepository;
     }
 
-    public Build createBuild(String id, String version, Platform platform) {
+    public Build createBuild(@NonNull String id, String version, Platform platform) {
         if (buildRepository.findById(id).isPresent()) {
             throw new BuildAlreadyExistException(id);
         }
@@ -35,7 +36,7 @@ public class BuildService {
         return buildRepository.save(build);
     }
 
-    public Optional<Build> findBuildById(String buildId) {
+    public Optional<Build> findBuildById(@NonNull String buildId) {
         return buildRepository.findById(buildId);
     }
 
@@ -43,7 +44,7 @@ public class BuildService {
         return buildRepository.findAll();
     }
 
-    public Build startValidation(String buildId) {
+    public Build startValidation(@NonNull String buildId) {
 
         Build build = getBuildOrThrow(buildId);
 
@@ -52,13 +53,13 @@ public class BuildService {
         return build;
     }
 
-    public Build getBuildOrThrow(String buildId) {
+    public Build getBuildOrThrow(@NonNull String buildId) {
         Build build = findBuildById(buildId)
                 .orElseThrow(() -> new BuildNotFoundException(buildId));
         return build;
     }
 
-    public Build approveBuild(String buildId) {
+    public Build approveBuild(@NonNull String buildId) {
         Build build = getBuildOrThrow(buildId);
 
         build.approve();
@@ -66,7 +67,7 @@ public class BuildService {
         return build;
     }
 
-    public Build rejectBuild(String buildId) {
+    public Build rejectBuild(@NonNull String buildId) {
         Build build = getBuildOrThrow(buildId);
 
         build.reject();
@@ -74,7 +75,7 @@ public class BuildService {
         return build;
     }
 
-    public Build addIssueToBuild(String buildId, String issueId, String title, IssueSeverity severity) {
+    public Build addIssueToBuild(@NonNull String buildId, String issueId, String title, IssueSeverity severity) {
         Build build = getBuildOrThrow(buildId);
 
         Issue issue = new Issue(issueId, title, severity);
@@ -84,7 +85,7 @@ public class BuildService {
         return build;
     }
 
-    public Build resolveIssue(String buildId, String issueId) {
+    public Build resolveIssue(@NonNull String buildId, String issueId) {
         Build build = getBuildOrThrow(buildId);
 
         build.resolveIssue(issueId);
@@ -92,13 +93,13 @@ public class BuildService {
         return build;
     }
 
-    public List<Issue> getIssuesByBuildId(String buildId) {
+    public List<Issue> getIssuesByBuildId(@NonNull String buildId) {
         Build build = getBuildOrThrow(buildId);
 
         return build.getIssues();
     }
 
-    public Issue getIssueById(String buildId, String issueId) {
+    public Issue getIssueById(@NonNull String buildId, String issueId) {
         Build build = getBuildOrThrow(buildId);
 
         return build.findIssueById(issueId)
