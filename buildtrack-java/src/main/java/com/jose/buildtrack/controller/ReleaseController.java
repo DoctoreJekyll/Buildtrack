@@ -3,6 +3,7 @@ package com.jose.buildtrack.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +45,7 @@ public class ReleaseController {
     }
 
     @PostMapping("/{releaseId}/builds/{buildId}")
-    public ReleaseResponseDTO addBuildToRelease(@PathVariable String releaseId, @PathVariable String buildId) {
+    public ReleaseResponseDTO addBuildToRelease(@PathVariable String releaseId, @PathVariable @NonNull String buildId) {
         Release release = releaseService.addBuildToRelease(releaseId, buildId);
         return releaseMapper.toReleaseResponseDTO(release);
     }
