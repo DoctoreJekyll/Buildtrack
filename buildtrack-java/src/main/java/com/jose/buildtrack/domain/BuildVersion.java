@@ -1,5 +1,8 @@
 package com.jose.buildtrack.domain;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class BuildVersion {
 
     private final String value;
