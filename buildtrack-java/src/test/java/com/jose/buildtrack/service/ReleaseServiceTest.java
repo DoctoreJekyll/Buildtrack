@@ -61,15 +61,15 @@ public class ReleaseServiceTest {
         BuildService buildService = createBuildService();
         ReleaseService releaseService = createReleaseService(buildService);
 
-        buildService.createBuild(1, "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
+        buildService.createBuild("build-001", "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
         releaseService.createRelease("release-001", "Release 1.0");
 
         // Act
-        Release release = releaseService.addBuildToRelease("release-001", 1);
+        Release release = releaseService.addBuildToRelease("release-001", "build-001");
 
         // Assert
         assertEquals(1, release.getBuilds().size());
-        assertEquals(1, release.getBuilds().get(0).getId());
+        assertEquals("build-001", release.getBuilds().get(0).getId());
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ReleaseServiceTest {
         // Act + Assert
         assertThrows(
                 BuildNotFoundException.class,
-                () -> releaseService.addBuildToRelease("release-001", 9)
+                () -> releaseService.addBuildToRelease("release-001", "build-999")
         );
     }
 
@@ -93,12 +93,12 @@ public class ReleaseServiceTest {
         BuildService buildService = createBuildService();
         ReleaseService releaseService = createReleaseService(buildService);
 
-        buildService.createBuild(1, "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
-        buildService.startValidation(1);
-        buildService.approveBuild(1);
+        buildService.createBuild("build-001", "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
+        buildService.startValidation("build-001");
+        buildService.approveBuild("build-001");
 
         releaseService.createRelease("release-001", "Release 1.0");
-        releaseService.addBuildToRelease("release-001", 1);
+        releaseService.addBuildToRelease("release-001", "build-001");
 
         // Act
         Release release = releaseService.prepareRelease("release-001");
@@ -113,12 +113,12 @@ public class ReleaseServiceTest {
         BuildService buildService = createBuildService();
         ReleaseService releaseService = createReleaseService(buildService);
 
-        buildService.createBuild(1, "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
-        buildService.startValidation(1);
-        buildService.approveBuild(1);
+        buildService.createBuild("build-001", "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
+        buildService.startValidation("build-001");
+        buildService.approveBuild("build-001");
 
         releaseService.createRelease("release-001", "Release 1.0");
-        releaseService.addBuildToRelease("release-001", 1);
+        releaseService.addBuildToRelease("release-001", "build-001");
         releaseService.prepareRelease("release-001");
 
         // Act

@@ -46,7 +46,7 @@ public class BuildController {
     }
 
     @GetMapping("/{id}")
-    public BuildResponseDTO getBuild(@PathVariable Integer id) {
+    public BuildResponseDTO getBuild(@PathVariable String id) {
 
         Build build = buildService.findBuildById(id)
                 .orElseThrow(() -> new BuildNotFoundException(id));
@@ -64,7 +64,7 @@ public class BuildController {
     }
 
     @PostMapping("/{id}/validate")
-    public BuildResponseDTO validate(@PathVariable Integer id) {
+    public BuildResponseDTO validate(@PathVariable String id) {
 
         Build build = buildService.startValidation(id);
 
@@ -72,7 +72,7 @@ public class BuildController {
     }
 
     @PostMapping("/{id}/approve")
-    public BuildResponseDTO approve(@PathVariable Integer id) {
+    public BuildResponseDTO approve(@PathVariable String id) {
 
         Build build = buildService.approveBuild(id);
 
@@ -80,7 +80,7 @@ public class BuildController {
     }
 
     @PostMapping("/{id}/reject")
-    public BuildResponseDTO reject(@PathVariable Integer id) {
+    public BuildResponseDTO reject(@PathVariable String id) {
 
         Build build = buildService.rejectBuild(id);
 
@@ -89,7 +89,7 @@ public class BuildController {
 
     @PostMapping("/{id}/issues")
     public BuildResponseDTO addIssue(
-            @PathVariable Integer id,
+            @PathVariable String id,
             @Valid @RequestBody CreateIssueRequestDTO request
     ) {
         Build build = buildService.addIssueToBuild(
@@ -104,7 +104,7 @@ public class BuildController {
 
     @PostMapping("/{buildId}/issues/{issueId}/resolve")
     public BuildResponseDTO resolveIssue(
-            @PathVariable Integer buildId,
+            @PathVariable String buildId,
             @PathVariable String issueId
     ) {
         Build build = buildService.resolveIssue(buildId, issueId);
@@ -113,7 +113,7 @@ public class BuildController {
     }
 
     @GetMapping("/{buildId}/issues")
-    public List<IssueResponseDTO> getIssuesByBuild(@PathVariable Integer buildId) {
+    public List<IssueResponseDTO> getIssuesByBuild(@PathVariable String buildId) {
 
         return buildService.getIssuesByBuildId(buildId)
                 .stream()
@@ -123,7 +123,7 @@ public class BuildController {
 
     @GetMapping("/{buildId}/issues/{issueId}")
     public IssueResponseDTO getIssueById(
-            @PathVariable Integer buildId,
+            @PathVariable String buildId,
             @PathVariable String issueId
     ) {
         Issue issue = buildService.getIssueById(buildId, issueId);

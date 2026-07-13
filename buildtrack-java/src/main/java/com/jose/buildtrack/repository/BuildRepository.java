@@ -22,7 +22,7 @@ public class BuildRepository {
         return build;
     }
 
-    public Optional<Build> findById(Integer id){
+    public Optional<Build> findById(String id){
         for (Build build : builds) {
             if (build.getId().equals(id)) {
                 return Optional.of(build);

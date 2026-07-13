@@ -4,22 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
-@Entity
 public class Build {
 
-    @Id
-    private final Integer id;
-    
+    private final String id;
     private final BuildVersion version;
     private BuildStatus status;
     private final Platform platform;
     private final List<Issue> issues;
 
-    public Build(Integer id, BuildVersion version, Platform platform) {
-        validateRequiredId(id, "ID");
+    public Build(String id, BuildVersion version, Platform platform) {
+        validateRequiredText(id, "ID");
         validateRequiredVersion(version);
         validateRequiredPlatform(platform);
 
@@ -33,14 +27,6 @@ public class Build {
     private static void validateRequiredPlatform(Platform platform) {
         if (platform == null) {
             throw new IllegalArgumentException("Platform cannot be null");
-        }
-    }
-
-    private static void validateRequiredId(Integer value, String fieldName) {
-        if (value == null) {
-            throw new IllegalArgumentException(
-                    fieldName + " cannot be null"
-            );
         }
     }
 
@@ -58,7 +44,7 @@ public class Build {
         }
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 

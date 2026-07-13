@@ -50,7 +50,7 @@ public class SoftwareProject {
         builds.add(build);
     }
 
-    private void verifyUniqueBuildId(Integer buildId) {
+    private void verifyUniqueBuildId(String buildId) {
         for (Build build : builds) {
             if (build.getId().equals(buildId)) {
                 throw new IllegalArgumentException("Build ID must be unique within the project");

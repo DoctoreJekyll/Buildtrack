@@ -51,7 +51,7 @@ public class ReleaseService {
         releaseRepository.delete(release);
     }
 
-    public Release addBuildToRelease(String releaseId, int buildId) {
+    public Release addBuildToRelease(String releaseId, String buildId) {
         Release release = getReleaseOrThrow(releaseId);
         Optional<Build> optBuild = buildService.findBuildById(buildId);
         Build build = optBuild.orElseThrow(() -> new BuildNotFoundException(buildId));

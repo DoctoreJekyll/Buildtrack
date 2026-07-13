@@ -25,7 +25,7 @@ public class BuildService {
         this.buildRepository = buildRepository;
     }
 
-    public Build createBuild(Integer id, String version, Platform platform) {
+    public Build createBuild(String id, String version, Platform platform) {
         if (buildRepository.findById(id).isPresent()) {
             throw new BuildAlreadyExistException(id);
         }
@@ -35,7 +35,7 @@ public class BuildService {
         return buildRepository.save(build);
     }
 
-    public Optional<Build> findBuildById(Integer buildId) {
+    public Optional<Build> findBuildById(String buildId) {
         return buildRepository.findById(buildId);
     }
 
@@ -43,7 +43,7 @@ public class BuildService {
         return buildRepository.findAll();
     }
 
-    public Build startValidation(Integer buildId) {
+    public Build startValidation(String buildId) {
 
         Build build = getBuildOrThrow(buildId);
 
@@ -52,13 +52,13 @@ public class BuildService {
         return build;
     }
 
-    public Build getBuildOrThrow(Integer buildId) {
+    public Build getBuildOrThrow(String buildId) {
         Build build = findBuildById(buildId)
                 .orElseThrow(() -> new BuildNotFoundException(buildId));
         return build;
     }
 
-    public Build approveBuild(Integer buildId) {
+    public Build approveBuild(String buildId) {
         Build build = getBuildOrThrow(buildId);
 
         build.approve();
@@ -66,7 +66,7 @@ public class BuildService {
         return build;
     }
 
-    public Build rejectBuild(Integer buildId) {
+    public Build rejectBuild(String buildId) {
         Build build = getBuildOrThrow(buildId);
 
         build.reject();
@@ -74,7 +74,7 @@ public class BuildService {
         return build;
     }
 
-    public Build addIssueToBuild(Integer buildId, String issueId, String title, IssueSeverity severity) {
+    public Build addIssueToBuild(String buildId, String issueId, String title, IssueSeverity severity) {
         Build build = getBuildOrThrow(buildId);
 
         Issue issue = new Issue(issueId, title, severity);
@@ -84,7 +84,7 @@ public class BuildService {
         return build;
     }
 
-    public Build resolveIssue(Integer buildId, String issueId) {
+    public Build resolveIssue(String buildId, String issueId) {
         Build build = getBuildOrThrow(buildId);
 
         build.resolveIssue(issueId);
@@ -92,13 +92,13 @@ public class BuildService {
         return build;
     }
 
-    public List<Issue> getIssuesByBuildId(Integer buildId) {
+    public List<Issue> getIssuesByBuildId(String buildId) {
         Build build = getBuildOrThrow(buildId);
 
         return build.getIssues();
     }
 
-    public Issue getIssueById(Integer buildId, String issueId) {
+    public Issue getIssueById(String buildId, String issueId) {
         Build build = getBuildOrThrow(buildId);
 
         return build.findIssueById(issueId)

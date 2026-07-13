@@ -9,7 +9,7 @@ public class BuildTest {
     @Test
     void shouldStartWithCreatedStatus() {
         Build build = new Build(
-                1,
+                "build-001",
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );
@@ -21,7 +21,7 @@ public class BuildTest {
     void shouldRejectBuildWhenVersionIsNull() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new Build(1, null, Platform.WINDOWS)
+                () -> new Build("build-001", null, Platform.WINDOWS)
         );
     }
 
@@ -29,7 +29,7 @@ public class BuildTest {
     void shouldStartValidationWhenBuildIsCreated() {
 
         Build build = new Build(
-                1,
+                "build-001",
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );
@@ -42,7 +42,7 @@ public class BuildTest {
     @Test
     void shouldRejectApprovalWhenBuildHasOpenBlockerIssue() {
         Build build = new Build(
-                1,
+                "build-001",
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );
@@ -64,7 +64,7 @@ public class BuildTest {
     @Test
     void shouldApproveBuildWhenBlockerIssueIsResolved() {
         Build build = new Build(
-                1,
+                "build-001",
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );
@@ -84,7 +84,7 @@ public class BuildTest {
     @Test
     void shouldRejectDuplicatedIssueId() {
         Build build = new Build(
-                1,
+                "build-001",
                 new BuildVersion("1.0.0"),
                 Platform.WINDOWS
         );
