@@ -50,7 +50,7 @@ public class BuildService {
 
         build.startValidation();
 
-        return build;
+        return buildRepository.save(build);
     }
 
     public Build getBuildOrThrow(@NonNull String buildId) {
@@ -64,7 +64,7 @@ public class BuildService {
 
         build.approve();
 
-        return build;
+        return buildRepository.save(build);
     }
 
     public Build rejectBuild(@NonNull String buildId) {
@@ -72,7 +72,7 @@ public class BuildService {
 
         build.reject();
 
-        return build;
+        return buildRepository.save(build);
     }
 
     public Build addIssueToBuild(@NonNull String buildId, String issueId, String title, IssueSeverity severity) {
@@ -82,7 +82,7 @@ public class BuildService {
 
         build.addIssue(issue);
 
-        return build;
+        return buildRepository.save(build);
     }
 
     public Build resolveIssue(@NonNull String buildId, String issueId) {
@@ -90,7 +90,7 @@ public class BuildService {
 
         build.resolveIssue(issueId);
 
-        return build;
+        return buildRepository.save(build);
     }
 
     public List<Issue> getIssuesByBuildId(@NonNull String buildId) {

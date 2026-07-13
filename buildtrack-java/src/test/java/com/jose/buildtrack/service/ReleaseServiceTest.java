@@ -1,125 +1,143 @@
 package com.jose.buildtrack.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.jose.buildtrack.domain.Platform;
 import com.jose.buildtrack.domain.Release;
 import com.jose.buildtrack.domain.ReleaseStatus;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
 import com.jose.buildtrack.exceptions.ReleaseAlreadyExistsException;
-import com.jose.buildtrack.repository.ReleaseRepository;
 
-public class ReleaseServiceTest {
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+class ReleaseServiceTest {
 
     @Autowired
-    BuildService buildService;
-    
+    private BuildService buildService;
 
-    private ReleaseService createReleaseService(BuildService buildService) {
-        ReleaseRepository releaseRepository = new ReleaseRepository();
-        return new ReleaseService(releaseRepository, buildService);
-    }
+    @Autowired
+    private ReleaseService releaseService;
 
     @Test
     void shouldCreateRelease() {
-        // Arrange
-        ReleaseService releaseService = createReleaseService(buildService);
+        Release release = releaseService.createRelease(
+                "release-service-001",
+                "Release 1.0"
+        );
 
-        // Act
-        Release release = releaseService.createRelease("release-001", "Release 1.0");
-
-        // Assert
-        assertEquals("release-001", release.getId());
+        assertEquals("release-service-001", release.getId());
         assertEquals("Release 1.0", release.getName());
         assertEquals(ReleaseStatus.DRAFT, release.getStatus());
     }
 
     @Test
     void shouldRejectDuplicatedReleaseId() {
-        // Arrange
-        ReleaseService releaseService = createReleaseService(buildService);
+        releaseService.createRelease(
+                "release-service-duplicate",
+                "Release 1.0"
+        );
 
-        releaseService.createRelease("release-001", "Release 1.0");
-
-        // Act + Assert
         assertThrows(
                 ReleaseAlreadyExistsException.class,
-                () -> releaseService.createRelease("release-001", "Another Release")
+                () -> releaseService.createRelease(
+                        "release-service-duplicate",
+                        "Another Release"
+                )
         );
     }
 
     @Test
     void shouldAddExistingBuildToRelease() {
-        // Arrange
-        ReleaseService releaseService = createReleaseService(buildService);
+        buildService.createBuild(
+                "build-service-001",
+                "1.0.0",
+                Platform.WINDOWS
+        );
 
-        buildService.createBuild("build-001", "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
-        releaseService.createRelease("release-001", "Release 1.0");
+        releaseService.createRelease(
+                "release-service-add-build",
+                "Release 1.0"
+        );
 
-        // Act
-        Release release = releaseService.addBuildToRelease("release-001", "build-001");
+        Release release = releaseService.addBuildToRelease(
+                "release-service-add-build",
+                "build-service-001"
+        );
 
-        // Assert
         assertEquals(1, release.getBuilds().size());
-        assertEquals("build-001", release.getBuilds().get(0).getId());
+        assertEquals("build-service-001", release.getBuilds().get(0).getId());
     }
 
     @Test
     void shouldRejectAddingUnknownBuildToRelease() {
-        // Arrange
-        ReleaseService releaseService = createReleaseService(buildService);
+        releaseService.createRelease(
+                "release-service-unknown-build",
+                "Release 1.0"
+        );
 
-        releaseService.createRelease("release-001", "Release 1.0");
-
-        // Act + Assert
         assertThrows(
                 BuildNotFoundException.class,
-                () -> releaseService.addBuildToRelease("release-001", "build-999")
+                () -> releaseService.addBuildToRelease(
+                        "release-service-unknown-build",
+                        "build-unknown"
+                )
         );
     }
 
     @Test
     void shouldPrepareReleaseWhenBuildIsApproved() {
-        // Arrange
-        ReleaseService releaseService = createReleaseService(buildService);
+        buildService.createBuild(
+                "build-service-approved",
+                "1.0.0",
+                Platform.WINDOWS
+        );
 
-        buildService.createBuild("build-001", "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
-        buildService.startValidation("build-001");
-        buildService.approveBuild("build-001");
+        buildService.startValidation("build-service-approved");
+        buildService.approveBuild("build-service-approved");
 
-        releaseService.createRelease("release-001", "Release 1.0");
-        releaseService.addBuildToRelease("release-001", "build-001");
+        releaseService.createRelease(
+                "release-service-prepare",
+                "Release 1.0"
+        );
 
-        // Act
-        Release release = releaseService.prepareRelease("release-001");
+        releaseService.addBuildToRelease(
+                "release-service-prepare",
+                "build-service-approved"
+        );
 
-        // Assert
+        Release release = releaseService.prepareRelease("release-service-prepare");
+
         assertEquals(ReleaseStatus.READY, release.getStatus());
     }
 
     @Test
     void shouldPublishReleaseAfterPreparation() {
-        // Arrange
-        ReleaseService releaseService = createReleaseService(buildService);
+        buildService.createBuild(
+                "build-service-publish",
+                "1.0.0",
+                Platform.WINDOWS
+        );
 
-        buildService.createBuild("build-001", "1.0.0", com.jose.buildtrack.domain.Platform.WINDOWS);
-        buildService.startValidation("build-001");
-        buildService.approveBuild("build-001");
+        buildService.startValidation("build-service-publish");
+        buildService.approveBuild("build-service-publish");
 
-        releaseService.createRelease("release-001", "Release 1.0");
-        releaseService.addBuildToRelease("release-001", "build-001");
-        releaseService.prepareRelease("release-001");
+        releaseService.createRelease(
+                "release-service-publish",
+                "Release 1.0"
+        );
 
-        // Act
-        Release release = releaseService.publishRelease("release-001");
+        releaseService.addBuildToRelease(
+                "release-service-publish",
+                "build-service-publish"
+        );
 
-        // Assert
+        releaseService.prepareRelease("release-service-publish");
+
+        Release release = releaseService.publishRelease("release-service-publish");
+
         assertEquals(ReleaseStatus.PUBLISHED, release.getStatus());
     }
-
-
-    
 }

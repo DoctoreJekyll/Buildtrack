@@ -1,11 +1,17 @@
 package com.jose.buildtrack.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class BuildVersion {
 
-    private final String value;
+    @Column(name = "version_value")
+    private String value;
+
+    protected BuildVersion() {
+
+    }
 
     public BuildVersion(String value) {
         validateRequiredText(value, "Version");

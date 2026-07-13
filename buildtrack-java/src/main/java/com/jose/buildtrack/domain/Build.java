@@ -4,18 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
+@Table(name = "builds")
 public class Build {
 
     @Id
-    private final String id;
-    private final BuildVersion version;
+    private String id;
+    @Embedded
+    private BuildVersion version;
+    @Enumerated(EnumType.STRING)
     private BuildStatus status;
-    private final Platform platform;
-    private final List<Issue> issues;
+    @Enumerated(EnumType.STRING)
+    private Platform platform;
+
+    @Transient
+    private List<Issue> issues;
+
+
+    protected Build() {
+        this.issues = new ArrayList<>();
+    }
+
 
     public Build(String id, BuildVersion version, Platform platform) {
         validateRequiredText(id, "ID");
@@ -26,7 +43,7 @@ public class Build {
         this.version = version;
         this.platform = platform;
         this.status = BuildStatus.CREATED;
-        issues = new ArrayList<>();
+        this.issues = new ArrayList<>();
     }
 
     private static void validateRequiredPlatform(Platform platform) {
