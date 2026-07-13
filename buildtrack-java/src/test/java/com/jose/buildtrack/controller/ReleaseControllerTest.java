@@ -83,7 +83,7 @@ class ReleaseControllerTest {
                         .andExpect(jsonPath("$.id").value("B-REL-001"))
                         .andExpect(jsonPath("$.status").value("CREATED"));
         } else {
-                // TODO handle null value
+                throw new IllegalStateException("MediaType.APPLICATION_JSON is null");
         }
 
         /*
@@ -128,7 +128,7 @@ class ReleaseControllerTest {
                         .andExpect(jsonPath("$.id").value("R-MOCK-001"))
                         .andExpect(jsonPath("$.status").value("DRAFT"));
         } else {
-                // TODO handle null value
+                throw new IllegalStateException("MediaType.APPLICATION_JSON is null");
         }
 
         /*
@@ -202,7 +202,7 @@ class ReleaseControllerTest {
                         .andExpect(jsonPath("$.id").value("R-MOCK-EMPTY"))
                         .andExpect(jsonPath("$.status").value("DRAFT"));
         } else {
-                // TODO handle null value
+                throw new IllegalStateException("MediaType.APPLICATION_JSON is null");
         }
 
         /*
@@ -245,7 +245,7 @@ class ReleaseControllerTest {
                         .andExpect(jsonPath("$.id").value("R-MOCK-UNKNOWN-BUILD"))
                         .andExpect(jsonPath("$.status").value("DRAFT"));
         } else {
-                // TODO handle null value
+                throw new IllegalStateException("MediaType.APPLICATION_JSON is null");
         }
 
         /*
