@@ -1,6 +1,7 @@
 package com.jose.buildtrack.controller;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
@@ -37,28 +38,28 @@ public class ReleaseController {
     public ReleaseResponseDTO create(@Valid @RequestBody CreateReleaseRequestDTO request) {
 
         Release release = releaseService.createRelease(
-                request.id(),
-                request.name()
+                Objects.requireNonNull(request.id()),
+                Objects.requireNonNull(request.name())
         );
 
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
     @PostMapping("/{releaseId}/builds/{buildId}")
-    public ReleaseResponseDTO addBuildToRelease(@PathVariable String releaseId, @PathVariable @NonNull String buildId) {
+    public ReleaseResponseDTO addBuildToRelease(@PathVariable @NonNull String releaseId, @PathVariable @NonNull String buildId) {
         Release release = releaseService.addBuildToRelease(releaseId, buildId);
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
     @PostMapping("/{releaseId}/prepare")
-    public ReleaseResponseDTO prepareRelease(@PathVariable String releaseId) {
+    public ReleaseResponseDTO prepareRelease(@PathVariable @NonNull String releaseId) {
         Release release = releaseService.prepareRelease(releaseId);
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
 
     @PostMapping("/{releaseId}/publish")
-    public ReleaseResponseDTO publishRelease(@PathVariable String releaseId) {
+    public ReleaseResponseDTO publishRelease(@PathVariable @NonNull String releaseId) {
         Release release = releaseService.publishRelease(releaseId);
         return releaseMapper.toReleaseResponseDTO(release);
     }
@@ -74,7 +75,7 @@ public class ReleaseController {
     }
 
     @GetMapping("/{id}")
-    public ReleaseResponseDTO getRelease(@PathVariable String id) {
+    public ReleaseResponseDTO getRelease(@PathVariable @NonNull String id) {
 
         Release release = releaseService.getReleaseById(id);
 
@@ -83,7 +84,7 @@ public class ReleaseController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteRelease(@PathVariable String id) {
+    public void deleteRelease(@PathVariable @NonNull String id) {
         releaseService.deleteRelease(id);
     }
 }

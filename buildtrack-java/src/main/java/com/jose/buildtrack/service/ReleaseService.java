@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.jose.buildtrack.domain.Build;
 import com.jose.buildtrack.domain.Release;
+import com.jose.buildtrack.domain.ReleaseStatus;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
 import com.jose.buildtrack.exceptions.ReleaseAlreadyExistsException;
 import com.jose.buildtrack.exceptions.ReleaseNotFoundException;
@@ -39,7 +40,7 @@ public class ReleaseService {
         return releaseRepository.findById(releaseId);
     }
 
-    public Release getReleaseById(String releaseId) {
+    public Release getReleaseById(@NonNull String releaseId) {
         return getReleaseOrThrow(releaseId);
     }
 
@@ -49,6 +50,11 @@ public class ReleaseService {
 
     public void deleteRelease(@NonNull String releaseId) {
         Release release = getReleaseOrThrow(releaseId);
+
+        if (release.getStatus() == ReleaseStatus.PUBLISHED) {
+            throw new IllegalStateException("Cannot delete a published release");
+        }
+
         releaseRepository.delete(release);
     }
 
