@@ -1,10 +1,32 @@
 package com.jose.buildtrack.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "issues")
 public class Issue {
-    private final String id;
-    private final String title;
-    private final IssueSeverity severity;
+    @Id
+    private String id;
+    private String title;
+    @Enumerated(EnumType.STRING)
+    private IssueSeverity severity;
+    @Enumerated(EnumType.STRING)
     private IssueStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "build_id")
+    private Build build;
+
+    public Issue() {
+        // Default constructor for JPA
+    }
 
     public Issue(String id, String title, IssueSeverity severity) {
         validateRequiredText(id, "ID");
@@ -53,6 +75,13 @@ public class Issue {
             throw new IllegalStateException("Only OPEN issues can be resolved");
         }
         this.status = IssueStatus.RESOLVED;
+    }
+
+    public void assignToBuild(Build build) {
+        if (build == null) {
+            throw new IllegalArgumentException("Build cannot be null");
+        }
+        this.build = build;
     }
     
 }

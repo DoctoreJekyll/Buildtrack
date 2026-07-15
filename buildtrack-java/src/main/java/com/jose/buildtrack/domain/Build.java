@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+
 
 @Entity
 @Table(name = "builds")
@@ -25,8 +28,13 @@ public class Build {
     @Enumerated(EnumType.STRING)
     private Platform platform;
 
-    @Transient
-    private List<Issue> issues;
+    @OneToMany(
+            mappedBy = "build",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    private List<Issue> issues = new ArrayList<>();
 
 
     protected Build() {
@@ -117,6 +125,7 @@ public class Build {
 
         verifyUniqueIssueId(issue.getId());
 
+        issue.assignToBuild(this);
         issues.add(issue);
     }
 
