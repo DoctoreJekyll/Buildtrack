@@ -3,12 +3,39 @@ package com.jose.buildtrack.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "releases")
 public class Release {
 
-    private final String id;
-    private final String name;
-    private final List<Build> builds;
+    @Id
+    private String id;
+
+    private String name;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "release_builds",
+            joinColumns = @JoinColumn(name = "release_id"),
+            inverseJoinColumns = @JoinColumn(name = "build_id")
+    )
+    private List<Build> builds = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
     private ReleaseStatus status;
+
+    public Release() {
+        // Default constructor for JPA
+    }
 
     public Release(String id, String name) {
         validateRequiredText(id, "ID");
