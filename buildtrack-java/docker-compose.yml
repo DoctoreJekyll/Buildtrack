@@ -11,5 +11,15 @@ services:
     volumes:
       - buildtrack-postgres-data:/var/lib/postgresql/data
 
+  buildtrack-api:
+    build: .
+    container_name: buildtrack-api
+    depends_on:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+
 volumes:
   buildtrack-postgres-data:
