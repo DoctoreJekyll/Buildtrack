@@ -26,6 +26,7 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+          cache-dependency-path: buildtrack-java/pom.xml
 
       - name: Run tests
-        run: mvn --batch-mode clean test
+        run: mvn --batch-mode -f buildtrack-java/pom.xml clean test
