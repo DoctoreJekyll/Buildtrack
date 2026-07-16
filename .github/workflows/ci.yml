@@ -30,3 +30,15 @@ jobs:
 
       - name: Run tests
         run: mvn --batch-mode -f buildtrack-java/pom.xml clean test
+
+  docker-build:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build Docker image
+        run: docker build -t buildtrack-api:ci buildtrack-java
