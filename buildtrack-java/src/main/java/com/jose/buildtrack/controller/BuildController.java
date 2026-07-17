@@ -20,10 +20,16 @@ import com.jose.buildtrack.exceptions.BuildNotFoundException;
 import com.jose.buildtrack.mapper.BuildMapper;
 import com.jose.buildtrack.service.BuildService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/builds")
+@Tag(
+        name = "Builds",
+        description = "Manage software builds, validation states and build issues"
+)
 public class BuildController {
 
     private final BuildService buildService;
@@ -34,6 +40,11 @@ public class BuildController {
         this.buildMapper = buildMapper;
     }
 
+
+    @Operation(
+            summary = "Create a build",
+            description = "Creates a new software build in CREATED status."
+    )
     @SuppressWarnings("null")
     @PostMapping
     public BuildResponseDTO create(@Valid @RequestBody CreateBuildRequestDTO request) {
@@ -47,6 +58,11 @@ public class BuildController {
         return buildMapper.toBuildResponseDTO(build);
     }
 
+
+    @Operation(
+        summary = "Get a build by ID",
+        description = "Returns the build identified by the provided ID."
+    )
     @GetMapping("/{id}")
     public BuildResponseDTO getBuild(@PathVariable @NonNull String id) {
 
@@ -56,6 +72,11 @@ public class BuildController {
         return buildMapper.toBuildResponseDTO(build);
     }
 
+
+    @Operation(
+        summary = "Get all builds",
+        description = "Returns every build currently stored in the system."
+    )
     @GetMapping
     public List<BuildResponseDTO> getAllBuilds() {
 

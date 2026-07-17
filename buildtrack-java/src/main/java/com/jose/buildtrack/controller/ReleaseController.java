@@ -20,10 +20,16 @@ import com.jose.buildtrack.dto.ReleaseResponseDTO;
 import com.jose.buildtrack.mapper.ReleaseMapper;
 import com.jose.buildtrack.service.ReleaseService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/releases")
+@Tag(
+        name = "Releases",
+        description = "Manage release preparation, build association and publication"
+)
 public class ReleaseController {
 
     private final ReleaseService releaseService;
@@ -34,6 +40,10 @@ public class ReleaseController {
         this.releaseMapper = releaseMapper;
     }
 
+    @Operation(
+            summary = "Create a release",
+            description = "Creates a new release in DRAFT status."
+    )
     @PostMapping
     public ReleaseResponseDTO create(@Valid @RequestBody CreateReleaseRequestDTO request) {
 
@@ -45,12 +55,20 @@ public class ReleaseController {
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
+
     @PostMapping("/{releaseId}/builds/{buildId}")
     public ReleaseResponseDTO addBuildToRelease(@PathVariable @NonNull String releaseId, @PathVariable @NonNull String buildId) {
         Release release = releaseService.addBuildToRelease(releaseId, buildId);
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
+    @Operation(
+        summary = "Prepare a release",
+        description = """
+                Moves a release from DRAFT to READY when it contains builds,
+                all builds are approved and no open blocker issues exist.
+                """
+    )
     @PostMapping("/{releaseId}/prepare")
     public ReleaseResponseDTO prepareRelease(@PathVariable @NonNull String releaseId) {
         Release release = releaseService.prepareRelease(releaseId);
@@ -58,6 +76,10 @@ public class ReleaseController {
     }
 
 
+    @Operation(
+        summary = "Publish a release",
+        description = "Moves a release from READY to PUBLISHED."
+    )
     @PostMapping("/{releaseId}/publish")
     public ReleaseResponseDTO publishRelease(@PathVariable @NonNull String releaseId) {
         Release release = releaseService.publishRelease(releaseId);
