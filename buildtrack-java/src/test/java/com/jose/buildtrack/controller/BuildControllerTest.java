@@ -111,7 +111,7 @@ class BuildControllerTest {
                      * - el service creó la build
                      * - el mapper devolvió una respuesta válida
                      */
-                    .andExpect(status().isOk())
+                    .andExpect(status().isCreated())
 
                     /*
                      * jsonPath("$.id") significa:

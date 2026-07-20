@@ -79,7 +79,7 @@ class ReleaseControllerTest {
                                           "platform": "WINDOWS"
                                         }
                                         """))
-                        .andExpect(status().isOk())
+                        .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.id").value("B-REL-001"))
                         .andExpect(jsonPath("$.status").value("CREATED"));
         } else {
@@ -124,7 +124,7 @@ class ReleaseControllerTest {
                                           "name": "Release 1.0.0"
                                         }
                                         """))
-                        .andExpect(status().isOk())
+                        .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.id").value("R-MOCK-001"))
                         .andExpect(jsonPath("$.status").value("DRAFT"));
         } else {
@@ -198,7 +198,7 @@ class ReleaseControllerTest {
                                           "name": "Empty Release"
                                         }
                                         """))
-                        .andExpect(status().isOk())
+                        .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.id").value("R-MOCK-EMPTY"))
                         .andExpect(jsonPath("$.status").value("DRAFT"));
         } else {
@@ -241,7 +241,7 @@ class ReleaseControllerTest {
                                           "name": "Release With Unknown Build"
                                         }
                                         """))
-                        .andExpect(status().isOk())
+                        .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.id").value("R-MOCK-UNKNOWN-BUILD"))
                         .andExpect(jsonPath("$.status").value("DRAFT"));
         } else {
