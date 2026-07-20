@@ -19,19 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.jose.buildtrack.domain.Release;
+import com.jose.buildtrack.domain.ReleaseStatus;
 import com.jose.buildtrack.dto.CreateReleaseRequestDTO;
-import com.jose.buildtrack.dto.ErrorResponseDTO;
 import com.jose.buildtrack.dto.PageResponseDTO;
 import com.jose.buildtrack.dto.ReleaseResponseDTO;
 import com.jose.buildtrack.mapper.ReleaseMapper;
 import com.jose.buildtrack.service.ReleaseService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -56,42 +50,6 @@ public class ReleaseController {
         this.releaseMapper = releaseMapper;
     }
 
-    @Operation(
-            summary = "Create a release",
-            description = "Creates a new release in DRAFT status."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Release created successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ReleaseResponseDTO.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid release data",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "A release with the same ID already exists",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            )
-    })
     @PostMapping
     @SuppressWarnings("null")
     public ResponseEntity<ReleaseResponseDTO> createRelease(
@@ -116,57 +74,9 @@ public class ReleaseController {
                 .body(response);
     }
 
-    @Operation(
-            summary = "Add a build to a release",
-            description = "Associates an existing build with a DRAFT release."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Build added to the release successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ReleaseResponseDTO.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = """
-                            The release is not in DRAFT status or the build
-                            is already associated with the release
-                            """,
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Release or build not found",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            )
-    })
     @PostMapping("/{releaseId}/builds/{buildId}")
     public ReleaseResponseDTO addBuildToRelease(
-            @Parameter(
-                    description = "Unique identifier of the release",
-                    example = "R-001"
-            )
             @PathVariable @NonNull String releaseId,
-
-            @Parameter(
-                    description = "Unique identifier of the build",
-                    example = "B-001"
-            )
             @PathVariable @NonNull String buildId
     ) {
         Release release = releaseService.addBuildToRelease(
@@ -177,117 +87,32 @@ public class ReleaseController {
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
-    @Operation(
-            summary = "Prepare a release",
-            description = """
-                    Moves a release from DRAFT to READY.
-
-                    The release must contain at least one build, all builds
-                    must be approved and no open blocker issues may exist.
-                    """
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Release moved to READY",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ReleaseResponseDTO.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "The release does not satisfy the preparation rules",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Release not found",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            )
-    })
     @PostMapping("/{releaseId}/prepare")
     public ReleaseResponseDTO prepareRelease(
-            @Parameter(
-                    description = "Unique identifier of the release",
-                    example = "R-001"
-            )
             @PathVariable @NonNull String releaseId
     ) {
-        Release release = releaseService.prepareRelease(releaseId);
+        Release release =
+                releaseService.prepareRelease(releaseId);
 
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
-    @Operation(
-            summary = "Publish a release",
-            description = "Moves a release from READY to PUBLISHED."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Release published successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ReleaseResponseDTO.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "The release is not in READY status",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Release not found",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            )
-    })
     @PostMapping("/{releaseId}/publish")
     public ReleaseResponseDTO publishRelease(
-            @Parameter(
-                    description = "Unique identifier of the release",
-                    example = "R-001"
-            )
             @PathVariable @NonNull String releaseId
     ) {
-        Release release = releaseService.publishRelease(releaseId);
+        Release release =
+                releaseService.publishRelease(releaseId);
 
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
-    
-
     @GetMapping
-    public PageResponseDTO<ReleaseResponseDTO> getAllReleases(
-            @Parameter(
-                    description = "Zero-based page number",
-                    example = "0"
-            )
+    public PageResponseDTO<ReleaseResponseDTO> getReleases(
+
+            @RequestParam(required = false)
+            ReleaseStatus status,
+
             @RequestParam(defaultValue = "0")
             @Min(
                     value = 0,
@@ -295,10 +120,6 @@ public class ReleaseController {
             )
             int page,
 
-            @Parameter(
-                    description = "Number of elements per page, between 1 and 100",
-                    example = "10"
-            )
             @RequestParam(defaultValue = "10")
             @Min(
                     value = 1,
@@ -317,7 +138,7 @@ public class ReleaseController {
         );
 
         Page<ReleaseResponseDTO> releasePage = releaseService
-                .getAllReleases(pageable)
+                .searchReleases(status, pageable)
                 .map(releaseMapper::toReleaseResponseDTO);
 
         return new PageResponseDTO<>(
@@ -330,76 +151,19 @@ public class ReleaseController {
                 releasePage.isLast()
         );
     }
-    
 
-
-
-    @Operation(
-            summary = "Get a release by ID",
-            description = "Returns the release identified by the provided ID."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Release found",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ReleaseResponseDTO.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Release not found",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            )
-    })
     @GetMapping("/{id}")
     public ReleaseResponseDTO getRelease(
-            @Parameter(
-                    description = "Unique identifier of the release",
-                    example = "R-001"
-            )
             @PathVariable @NonNull String id
     ) {
-        Release release = releaseService.getReleaseById(id);
+        Release release =
+                releaseService.getReleaseById(id);
 
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
-    @Operation(
-            summary = "Delete a release",
-            description = "Deletes the release identified by the provided ID."
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "Release deleted successfully",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Release not found",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    implementation = ErrorResponseDTO.class
-                            )
-                    )
-            )
-    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRelease(
-            @Parameter(
-                    description = "Unique identifier of the release",
-                    example = "R-001"
-            )
             @PathVariable @NonNull String id
     ) {
         releaseService.deleteRelease(id);
