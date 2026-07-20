@@ -3,6 +3,10 @@ package com.jose.buildtrack.controller;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,6 +25,7 @@ import com.jose.buildtrack.dto.CreateBuildRequestDTO;
 import com.jose.buildtrack.dto.CreateIssueRequestDTO;
 import com.jose.buildtrack.dto.ErrorResponseDTO;
 import com.jose.buildtrack.dto.IssueResponseDTO;
+import com.jose.buildtrack.dto.PageResponseDTO;
 import com.jose.buildtrack.mapper.BuildMapper;
 import com.jose.buildtrack.service.BuildService;
 
@@ -32,6 +38,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @RestController
 @RequestMapping("/builds")
@@ -153,27 +161,83 @@ public class BuildController {
     }
 
     @Operation(
-            summary = "Get all builds",
-            description = "Returns every build currently stored in the system."
+            summary = "Get builds",
+            description = """
+                    Returns a paginated collection of builds.
+
+                    Results are ordered by build ID in ascending order.
+                    Page numbering starts at zero.
+                    """
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Builds retrieved successfully",
-            content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Build page retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
                             schema = @Schema(
-                                    implementation = BuildResponseDTO.class
+                                    implementation = PageResponseDTO.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid pagination parameters",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    implementation = ErrorResponseDTO.class
                             )
                     )
             )
-    )
+    })
     @GetMapping
-    public List<BuildResponseDTO> getAllBuilds() {
-        return buildService.getAllBuilds()
-                .stream()
-                .map(buildMapper::toBuildResponseDTO)
-                .toList();
+    public PageResponseDTO<BuildResponseDTO> getAllBuilds(
+            @Parameter(
+                    description = "Zero-based page number",
+                    example = "0"
+            )
+            @RequestParam(defaultValue = "0")
+            @Min(
+                    value = 0,
+                    message = "Page must be greater than or equal to 0"
+            )
+            int page,
+
+            @Parameter(
+                    description = "Number of elements per page, between 1 and 100",
+                    example = "10"
+            )
+            @RequestParam(defaultValue = "10")
+            @Min(
+                    value = 1,
+                    message = "Page size must be greater than or equal to 1"
+            )
+            @Max(
+                    value = 100,
+                    message = "Page size must be less than or equal to 100"
+            )
+            int size
+    ) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.ASC, "id")
+        );
+
+        Page<BuildResponseDTO> buildPage = buildService
+                .getAllBuilds(pageable)
+                .map(buildMapper::toBuildResponseDTO);
+
+        return new PageResponseDTO<>(
+                buildPage.getContent(),
+                buildPage.getNumber(),
+                buildPage.getSize(),
+                buildPage.getTotalElements(),
+                buildPage.getTotalPages(),
+                buildPage.isFirst(),
+                buildPage.isLast()
+        );
     }
 
     @Operation(
