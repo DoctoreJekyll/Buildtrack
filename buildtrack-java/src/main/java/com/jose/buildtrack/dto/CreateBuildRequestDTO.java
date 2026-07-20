@@ -21,7 +21,12 @@ public record CreateBuildRequestDTO(
 
         @Schema(
                 description = "Target platform of the build",
-                example = "WINDOWS"
+                example = "WINDOWS",
+                allowableValues = {
+                        "WINDOWS",
+                        "MACOS",
+                        "LINUX"
+                }
         )
         @NotBlank(message = "Build platform is required")
         String platform

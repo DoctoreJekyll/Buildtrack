@@ -17,7 +17,7 @@ public record ErrorResponseDTO(
         String error,
 
         @Schema(
-                description = "Detailed description of the error",
+                description = "Detailed error message",
                 example = "Build with ID B-001 not found"
         )
         String message

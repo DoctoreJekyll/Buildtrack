@@ -13,7 +13,7 @@ public record CreateIssueRequestDTO(
         String id,
 
         @Schema(
-                description = "Short description of the validation issue",
+                description = "Short description of the issue",
                 example = "Application crashes during startup"
         )
         @NotBlank(message = "Issue title is required")
@@ -21,7 +21,13 @@ public record CreateIssueRequestDTO(
 
         @Schema(
                 description = "Severity assigned to the issue",
-                example = "BLOCKER"
+                example = "BLOCKER",
+                allowableValues = {
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH",
+                        "BLOCKER"
+                }
         )
         @NotBlank(message = "Issue severity is required")
         String severity
