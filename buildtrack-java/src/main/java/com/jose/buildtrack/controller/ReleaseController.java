@@ -1,8 +1,11 @@
 package com.jose.buildtrack.controller;
 
 import java.net.URI;
-import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,25 +14,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.jose.buildtrack.domain.Release;
 import com.jose.buildtrack.dto.CreateReleaseRequestDTO;
 import com.jose.buildtrack.dto.ErrorResponseDTO;
+import com.jose.buildtrack.dto.PageResponseDTO;
 import com.jose.buildtrack.dto.ReleaseResponseDTO;
 import com.jose.buildtrack.mapper.ReleaseMapper;
 import com.jose.buildtrack.service.ReleaseService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @RestController
 @RequestMapping("/releases")
@@ -274,29 +280,59 @@ public class ReleaseController {
         return releaseMapper.toReleaseResponseDTO(release);
     }
 
-    @Operation(
-            summary = "Get all releases",
-            description = "Returns every release currently stored in the system."
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Releases retrieved successfully",
-            content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(
-                            schema = @Schema(
-                                    implementation = ReleaseResponseDTO.class
-                            )
-                    )
-            )
-    )
+    
+
     @GetMapping
-    public List<ReleaseResponseDTO> getAllReleases() {
-        return releaseService.getAllReleases()
-                .stream()
-                .map(releaseMapper::toReleaseResponseDTO)
-                .toList();
+    public PageResponseDTO<ReleaseResponseDTO> getAllReleases(
+            @Parameter(
+                    description = "Zero-based page number",
+                    example = "0"
+            )
+            @RequestParam(defaultValue = "0")
+            @Min(
+                    value = 0,
+                    message = "Page must be greater than or equal to 0"
+            )
+            int page,
+
+            @Parameter(
+                    description = "Number of elements per page, between 1 and 100",
+                    example = "10"
+            )
+            @RequestParam(defaultValue = "10")
+            @Min(
+                    value = 1,
+                    message = "Page size must be greater than or equal to 1"
+            )
+            @Max(
+                    value = 100,
+                    message = "Page size must be less than or equal to 100"
+            )
+            int size
+    ) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.ASC, "id")
+        );
+
+        Page<ReleaseResponseDTO> releasePage = releaseService
+                .getAllReleases(pageable)
+                .map(releaseMapper::toReleaseResponseDTO);
+
+        return new PageResponseDTO<>(
+                releasePage.getContent(),
+                releasePage.getNumber(),
+                releasePage.getSize(),
+                releasePage.getTotalElements(),
+                releasePage.getTotalPages(),
+                releasePage.isFirst(),
+                releasePage.isLast()
+        );
     }
+    
+
+
 
     @Operation(
             summary = "Get a release by ID",

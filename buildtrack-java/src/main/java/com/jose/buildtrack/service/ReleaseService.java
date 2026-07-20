@@ -1,8 +1,9 @@
 package com.jose.buildtrack.service;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -44,8 +45,8 @@ public class ReleaseService {
         return getReleaseOrThrow(releaseId);
     }
 
-    public List<Release> getAllReleases() {
-        return releaseRepository.findAll();
+    public Page<Release> getAllReleases(@NonNull Pageable pageable) {
+        return releaseRepository.findAll(pageable);
     }
 
     public void deleteRelease(@NonNull String releaseId) {
