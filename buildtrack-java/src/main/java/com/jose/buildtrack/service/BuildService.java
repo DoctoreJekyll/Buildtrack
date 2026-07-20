@@ -9,6 +9,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.jose.buildtrack.domain.Build;
+import com.jose.buildtrack.domain.BuildStatus;
 import com.jose.buildtrack.domain.BuildVersion;
 import com.jose.buildtrack.domain.Issue;
 import com.jose.buildtrack.domain.IssueSeverity;
@@ -54,7 +55,33 @@ public class BuildService {
                 .orElseThrow(() -> new BuildNotFoundException(buildId));
     }
 
-    public Page<Build> getAllBuilds(@NonNull Pageable pageable) {
+    public Page<Build> searchBuilds(
+            BuildStatus status,
+            Platform platform,
+            @NonNull Pageable pageable
+    ) {
+        if (status != null && platform != null) {
+            return buildRepository.findByStatusAndPlatform(
+                    status,
+                    platform,
+                    pageable
+            );
+        }
+
+        if (status != null) {
+            return buildRepository.findByStatus(
+                    status,
+                    pageable
+            );
+        }
+
+        if (platform != null) {
+            return buildRepository.findByPlatform(
+                    platform,
+                    pageable
+            );
+        }
+
         return buildRepository.findAll(pageable);
     }
 
