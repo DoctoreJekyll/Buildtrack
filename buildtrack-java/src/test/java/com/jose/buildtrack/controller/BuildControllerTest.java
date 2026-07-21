@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 // Nos permite indicar que el body de la petición será JSON
 import org.springframework.http.MediaType;
-
+import org.springframework.security.test.context.support.WithMockUser;
 // Herramienta principal para simular peticiones HTTP contra nuestra API
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -51,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(roles = "ADMIN")
 class BuildControllerTest {
 
     /**

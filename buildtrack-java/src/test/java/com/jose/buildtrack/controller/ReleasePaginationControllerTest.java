@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.jose.buildtrack.domain.Release;
@@ -19,6 +20,7 @@ import com.jose.buildtrack.repository.ReleaseRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(roles = "ADMIN")
 class ReleasePaginationControllerTest {
 
     @Autowired
@@ -33,10 +35,6 @@ class ReleasePaginationControllerTest {
     @SuppressWarnings("null")
     @BeforeEach
     void setUp() {
-        /*
-         * Eliminamos primero las releases porque release_builds
-         * puede contener referencias a builds.
-         */
         releaseRepository.deleteAll();
         buildRepository.deleteAll();
 
