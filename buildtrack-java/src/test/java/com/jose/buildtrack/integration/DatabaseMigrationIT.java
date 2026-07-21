@@ -45,7 +45,7 @@ class DatabaseMigrationIT {
                 String.class
         );
 
-        assertEquals("4", latestVersion);
+        assertEquals("5", latestVersion);
     }
 
     @Test
