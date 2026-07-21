@@ -1,9 +1,16 @@
 package com.jose.buildtrack.domain;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -15,6 +22,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "releases")
+@EntityListeners(AuditingEntityListener.class)
 public class Release {
 
     @Id
@@ -32,6 +40,14 @@ public class Release {
 
     @Enumerated(EnumType.STRING)
     private ReleaseStatus status;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
+    private Instant createdAt = Instant.now();
+
+    @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate
+    private Instant updatedAt = Instant.now();
 
     public Release() {
         // Default constructor for JPA
@@ -88,6 +104,15 @@ public class Release {
         return status;
     }
 
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    
     public void addBuild(Build build) {
         if (build == null) {
             throw new IllegalArgumentException("Build cannot be null");

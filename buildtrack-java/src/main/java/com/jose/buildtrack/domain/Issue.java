@@ -1,6 +1,14 @@
 package com.jose.buildtrack.domain;
 
+import java.time.Instant;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -11,6 +19,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "issues")
+@EntityListeners(AuditingEntityListener.class)
 public class Issue {
     @Id
     private String id;
@@ -23,6 +32,14 @@ public class Issue {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "build_id")
     private Build build;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
+    private Instant createdAt = Instant.now();
+
+    @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate
+    private Instant updatedAt = Instant.now();
 
     public Issue() {
         // Default constructor for JPA
@@ -68,6 +85,14 @@ public class Issue {
 
     public IssueStatus getStatus() {
         return status;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
     }
 
     public void resolve() {

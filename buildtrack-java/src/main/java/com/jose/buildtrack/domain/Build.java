@@ -1,12 +1,19 @@
 package com.jose.buildtrack.domain;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -17,6 +24,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "builds")
+@EntityListeners(AuditingEntityListener.class)
 public class Build {
 
     @Id
@@ -35,6 +43,14 @@ public class Build {
             fetch = FetchType.EAGER
     )
     private List<Issue> issues = new ArrayList<>();
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
+    private Instant createdAt = Instant.now();
+
+    @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate
+    private Instant updatedAt = Instant.now();
 
 
     protected Build() {
@@ -92,6 +108,14 @@ public class Build {
 
     public List<Issue> getIssues() {
         return List.copyOf(issues);
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
     }
 
     public void startValidation() {
