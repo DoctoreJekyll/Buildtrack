@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.jose.buildtrack.security.RestAccessDeniedHandler;
+import com.jose.buildtrack.security.RestAuthenticationEntryPoint;
 import com.jose.buildtrack.service.AppUserDetailsService;
 
 @Configuration
@@ -64,32 +66,45 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            JwtAuthenticationConverter jwtAuthenticationConverter
+            JwtAuthenticationConverter jwtAuthenticationConverter,
+            RestAuthenticationEntryPoint authenticationEntryPoint,
+            RestAccessDeniedHandler accessDeniedHandler
     ) throws Exception {
+    
         http
                 .csrf(csrf -> csrf.disable())
-
+    
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
                         )
                 )
-
+    
                 .formLogin(form -> form.disable())
-
+    
                 .httpBasic(basic -> basic.disable())
-
+    
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(
+                                authenticationEntryPoint
+                        )
+                        .accessDeniedHandler(
+                                accessDeniedHandler
+                        )
+                )
+    
                 .authorizeHttpRequests(auth -> auth
+    
                         .requestMatchers(
                                 "/auth/**"
                         ).permitAll()
-
+    
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
-
+    
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/builds/**"
@@ -97,7 +112,7 @@ public class SecurityConfig {
                                 "USER",
                                 "ADMIN"
                         )
-
+    
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/releases/**"
@@ -105,26 +120,34 @@ public class SecurityConfig {
                                 "USER",
                                 "ADMIN"
                         )
-
+    
                         .requestMatchers(
                                 "/builds/**"
                         ).hasRole("ADMIN")
-
+    
                         .requestMatchers(
                                 "/releases/**"
                         ).hasRole("ADMIN")
-                        
+    
                         .anyRequest().authenticated()
                 )
-
+    
                 .oauth2ResourceServer(oauth2 -> oauth2
+                        .authenticationEntryPoint(
+                                authenticationEntryPoint
+                        )
+                        .accessDeniedHandler(
+                                accessDeniedHandler
+                        )
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(
                                         jwtAuthenticationConverter
                                 )
                         )
                 );
-
+    
         return http.build();
     }
+
+
 }

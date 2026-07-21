@@ -7,6 +7,9 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 /**
  * Configuración general de la documentación OpenAPI.
@@ -17,6 +20,13 @@ import io.swagger.v3.oas.models.info.License;
  * - autor/contacto
  * - licencia
  */
+
+@SecurityScheme(
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT"
+)
 @Configuration
 public class OpenApiConfig {
     @Bean
@@ -33,6 +43,10 @@ public class OpenApiConfig {
                                 .name("José Antonio Rodríguez")
                                 .url("https://github.com/DoctoreJekyll/Buildtrack"))
                         .license(new License()
-                                .name("MIT License")));
+                                .name("MIT License")))
+                        .addSecurityItem(
+                                new SecurityRequirement()
+                                        .addList("bearerAuth")
+                                );
     }
 }
