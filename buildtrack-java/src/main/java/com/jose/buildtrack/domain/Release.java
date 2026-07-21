@@ -49,6 +49,9 @@ public class Release {
     @LastModifiedDate
     private Instant updatedAt;
 
+    @Column(name = "published_at")
+    private Instant publishedAt;
+
     protected Release() {
         // Default constructor for JPA
     }
@@ -112,6 +115,10 @@ public class Release {
         return updatedAt;
     }
 
+    public Instant getPublishedAt() {
+        return publishedAt;
+    }
+
     
     public void addBuild(Build build) {
         if (build == null) {
@@ -155,6 +162,7 @@ public class Release {
         }
 
         this.status = ReleaseStatus.PUBLISHED;
+        this.publishedAt = Instant.now();
     }
 
     private void verifyUniqueBuild(Build buildToAdd) {

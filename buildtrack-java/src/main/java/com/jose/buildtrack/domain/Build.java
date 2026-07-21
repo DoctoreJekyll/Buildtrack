@@ -52,6 +52,9 @@ public class Build {
     @LastModifiedDate
     private Instant updatedAt;
 
+    @Column(name = "completed_at")
+    private Instant completedAt;
+
 
     protected Build() {
         this.issues = new ArrayList<>();
@@ -118,6 +121,10 @@ public class Build {
         return updatedAt;
     }
 
+    public Instant getCompletedAt() {
+        return completedAt;
+    }
+
     public void startValidation() {
         if (status != BuildStatus.CREATED) {
             throw new IllegalStateException("Build must be in CREATED status to validate");
@@ -132,6 +139,7 @@ public class Build {
         }
 
         this.status = BuildStatus.APPROVED;
+        this.completedAt = Instant.now();
     }
 
     public void reject() {
@@ -140,6 +148,7 @@ public class Build {
         }
 
         this.status = BuildStatus.REJECTED;
+        this.completedAt = Instant.now();
     }
 
     public void addIssue(Issue issue) {

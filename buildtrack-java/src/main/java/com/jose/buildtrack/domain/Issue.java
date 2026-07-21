@@ -41,6 +41,9 @@ public class Issue {
     @LastModifiedDate
     private Instant updatedAt;
 
+    @Column(name = "resolved_at")
+    private Instant resolvedAt;
+
     protected Issue() {
         // Default constructor for JPA
     }
@@ -95,11 +98,16 @@ public class Issue {
         return updatedAt;
     }
 
+    public Instant getResolvedAt() {
+        return resolvedAt;
+    }
+
     public void resolve() {
         if (status != IssueStatus.OPEN) {
             throw new IllegalStateException("Only OPEN issues can be resolved");
         }
         this.status = IssueStatus.RESOLVED;
+        this.resolvedAt = Instant.now();
     }
 
     public void assignToBuild(Build build) {

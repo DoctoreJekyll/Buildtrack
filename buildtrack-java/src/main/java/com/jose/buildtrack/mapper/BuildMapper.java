@@ -22,7 +22,10 @@ public class BuildMapper {
                 build.getVersion().getValue(),
                 build.getPlatform().name(),
                 build.getStatus().name(),
-                toIssueResponseDTOList(build.getIssues())
+                toIssueResponseDTOList(build.getIssues()),
+                build.getCreatedAt(),
+                build.getUpdatedAt(),
+                build.getCompletedAt()
         );
     }
 
@@ -31,7 +34,10 @@ public class BuildMapper {
                 issue.getId(),
                 issue.getTitle(),
                 issue.getSeverity().name(),
-                issue.getStatus().name()
+                issue.getStatus().name(),
+                issue.getCreatedAt(),
+                issue.getUpdatedAt(),
+                issue.getResolvedAt()
         );
     }
 
