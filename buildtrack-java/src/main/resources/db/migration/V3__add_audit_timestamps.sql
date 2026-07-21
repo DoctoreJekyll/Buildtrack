@@ -1,0 +1,40 @@
+ALTER TABLE builds
+    ADD COLUMN created_at TIMESTAMP WITH TIME ZONE,
+    ADD COLUMN updated_at TIMESTAMP WITH TIME ZONE;
+
+ALTER TABLE issues
+    ADD COLUMN created_at TIMESTAMP WITH TIME ZONE,
+    ADD COLUMN updated_at TIMESTAMP WITH TIME ZONE;
+
+ALTER TABLE releases
+    ADD COLUMN created_at TIMESTAMP WITH TIME ZONE,
+    ADD COLUMN updated_at TIMESTAMP WITH TIME ZONE;
+
+
+UPDATE builds
+SET
+    created_at = CURRENT_TIMESTAMP,
+    updated_at = CURRENT_TIMESTAMP;
+
+UPDATE issues
+SET
+    created_at = CURRENT_TIMESTAMP,
+    updated_at = CURRENT_TIMESTAMP;
+
+UPDATE releases
+SET
+    created_at = CURRENT_TIMESTAMP,
+    updated_at = CURRENT_TIMESTAMP;
+
+
+ALTER TABLE builds
+    ALTER COLUMN created_at SET NOT NULL,
+    ALTER COLUMN updated_at SET NOT NULL;
+
+ALTER TABLE issues
+    ALTER COLUMN created_at SET NOT NULL,
+    ALTER COLUMN updated_at SET NOT NULL;
+
+ALTER TABLE releases
+    ALTER COLUMN created_at SET NOT NULL,
+    ALTER COLUMN updated_at SET NOT NULL;

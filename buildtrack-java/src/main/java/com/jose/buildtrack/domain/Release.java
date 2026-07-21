@@ -43,13 +43,13 @@ public class Release {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
 
     @Column(name = "updated_at", nullable = false)
     @LastModifiedDate
-    private Instant updatedAt = Instant.now();
+    private Instant updatedAt;
 
-    public Release() {
+    protected Release() {
         // Default constructor for JPA
     }
 

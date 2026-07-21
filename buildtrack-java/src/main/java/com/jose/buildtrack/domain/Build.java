@@ -46,11 +46,11 @@ public class Build {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
 
     @Column(name = "updated_at", nullable = false)
     @LastModifiedDate
-    private Instant updatedAt = Instant.now();
+    private Instant updatedAt;
 
 
     protected Build() {
