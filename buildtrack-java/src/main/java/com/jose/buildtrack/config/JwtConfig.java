@@ -5,7 +5,7 @@ import java.util.Base64;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -23,18 +23,18 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
+@EnableConfigurationProperties(JwtProperties.class)
 public class JwtConfig {
 
     @Bean
     public SecretKey jwtSecretKey(
-            @Value("${security.jwt.secret}")
-            String encodedSecret
+            JwtProperties jwtProperties
     ) {
         byte[] keyBytes;
 
         try {
             keyBytes = Base64.getDecoder()
-                    .decode(encodedSecret);
+                    .decode(jwtProperties.secret());
         } catch (IllegalArgumentException exception) {
             throw new IllegalStateException(
                     "security.jwt.secret must be a valid Base64 value",
@@ -77,8 +77,7 @@ public class JwtConfig {
     @Bean
     public JwtDecoder jwtDecoder(
             SecretKey jwtSecretKey,
-            @Value("${security.jwt.issuer}")
-            String issuer
+            JwtProperties jwtProperties
     ) {
         NimbusJwtDecoder jwtDecoder =
                 NimbusJwtDecoder
@@ -87,7 +86,9 @@ public class JwtConfig {
                         .build();
 
         jwtDecoder.setJwtValidator(
-                JwtValidators.createDefaultWithIssuer(issuer)
+                JwtValidators.createDefaultWithIssuer(
+                        jwtProperties.issuer()
+                )
         );
 
         return jwtDecoder;

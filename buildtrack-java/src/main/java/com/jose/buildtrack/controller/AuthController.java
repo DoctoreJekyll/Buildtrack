@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.jose.buildtrack.domain.AppUser;
+import com.jose.buildtrack.dto.LoginRequestDTO;
+import com.jose.buildtrack.dto.LoginResponseDTO;
 import com.jose.buildtrack.dto.RegisterRequestDTO;
 import com.jose.buildtrack.dto.UserResponseDTO;
 import com.jose.buildtrack.mapper.AppUserMapper;
 import com.jose.buildtrack.service.AppUserService;
+import com.jose.buildtrack.service.AuthService;
 
 import jakarta.validation.Valid;
 
@@ -23,13 +26,16 @@ public class AuthController {
 
     private final AppUserService appUserService;
     private final AppUserMapper appUserMapper;
+    private final AuthService authService;
 
     public AuthController(
             AppUserService appUserService,
-            AppUserMapper appUserMapper
+            AppUserMapper appUserMapper,
+            AuthService authService
     ) {
         this.appUserService = appUserService;
         this.appUserMapper = appUserMapper;
+        this.authService = authService;
     }
 
     @PostMapping("/register")
@@ -54,5 +60,15 @@ public class AuthController {
         return ResponseEntity
                 .created(location)
                 .body(response);
+    }
+
+    @PostMapping("/login")
+    public LoginResponseDTO login(
+            @Valid @RequestBody LoginRequestDTO request
+    ) {
+        return authService.login(
+                request.username(),
+                request.password()
+        );
     }
 }
