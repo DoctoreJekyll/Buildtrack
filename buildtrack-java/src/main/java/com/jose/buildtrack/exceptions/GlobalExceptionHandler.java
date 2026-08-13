@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.security.core.AuthenticationException;
 
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -159,6 +158,19 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(response);
+    }
+
+    @ExceptionHandler(IssueAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleIssueAlreadyExists(
+            IssueAlreadyExistsException exception) {
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
                 .body(response);
     }
 

@@ -14,6 +14,7 @@ import com.jose.buildtrack.domain.IssueSeverity;
 import com.jose.buildtrack.domain.Platform;
 import com.jose.buildtrack.exceptions.BuildAlreadyExistException;
 import com.jose.buildtrack.exceptions.BuildNotFoundException;
+import com.jose.buildtrack.exceptions.IssueAlreadyExistsException;
 import com.jose.buildtrack.exceptions.IssueNotFoundException;
 import com.jose.buildtrack.repository.BuildRepository;
 
@@ -99,10 +100,14 @@ public class BuildService {
 
     public Build addIssueToBuild(
             @NonNull String buildId,
-            String issueId,
+            @NonNull String issueId,
             String title,
             IssueSeverity severity) {
         Build build = getBuildById(buildId);
+
+        if (buildRepository.existsByIssuesId(issueId)) {
+            throw new IssueAlreadyExistsException(issueId);
+        }
 
         Issue issue = new Issue(
                 issueId,
