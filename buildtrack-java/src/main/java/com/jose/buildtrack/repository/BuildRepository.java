@@ -12,17 +12,16 @@ public interface BuildRepository extends JpaRepository<Build, String> {
 
     Page<Build> findByStatus(
             BuildStatus status,
-            Pageable pageable
-    );
+            Pageable pageable);
 
     Page<Build> findByPlatform(
             Platform platform,
-            Pageable pageable
-    );
+            Pageable pageable);
 
     Page<Build> findByStatusAndPlatform(
             BuildStatus status,
             Platform platform,
-            Pageable pageable
-    );
+            Pageable pageable);
+
+    boolean existsByIssuesId(String issueId);
 }

@@ -1,6 +1,5 @@
 package com.jose.buildtrack.service;
 
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,16 +21,14 @@ public class ReleaseService {
 
     public ReleaseService(
             ReleaseRepository releaseRepository,
-            BuildService buildService
-    ) {
+            BuildService buildService) {
         this.releaseRepository = releaseRepository;
         this.buildService = buildService;
     }
 
     public Release createRelease(
             @NonNull String id,
-            String name
-    ) {
+            String name) {
         if (releaseRepository.existsById(id)) {
             throw new ReleaseAlreadyExistsException(id);
         }
@@ -41,44 +38,33 @@ public class ReleaseService {
         return releaseRepository.save(release);
     }
 
-    public Optional<Release> findReleaseById(
-            @NonNull String releaseId
-    ) {
-        return releaseRepository.findById(releaseId);
-    }
 
     public Release getReleaseById(
-            @NonNull String releaseId
-    ) {
+            @NonNull String releaseId) {
         return releaseRepository.findById(releaseId)
                 .orElseThrow(
-                        () -> new ReleaseNotFoundException(releaseId)
-                );
+                        () -> new ReleaseNotFoundException(releaseId));
     }
 
     public Page<Release> searchReleases(
             ReleaseStatus status,
-            @NonNull Pageable pageable
-    ) {
+            @NonNull Pageable pageable) {
         if (status != null) {
             return releaseRepository.findByStatus(
                     status,
-                    pageable
-            );
+                    pageable);
         }
 
         return releaseRepository.findAll(pageable);
     }
 
     public void deleteRelease(
-            @NonNull String releaseId
-    ) {
+            @NonNull String releaseId) {
         Release release = getReleaseById(releaseId);
 
         if (release.getStatus() == ReleaseStatus.PUBLISHED) {
             throw new IllegalStateException(
-                    "Cannot delete a published release"
-            );
+                    "Cannot delete a published release");
         }
 
         releaseRepository.delete(release);
@@ -86,8 +72,7 @@ public class ReleaseService {
 
     public Release addBuildToRelease(
             @NonNull String releaseId,
-            @NonNull String buildId
-    ) {
+            @NonNull String buildId) {
         Release release = getReleaseById(releaseId);
         Build build = buildService.getBuildById(buildId);
 
@@ -97,8 +82,7 @@ public class ReleaseService {
     }
 
     public Release prepareRelease(
-            @NonNull String releaseId
-    ) {
+            @NonNull String releaseId) {
         Release release = getReleaseById(releaseId);
 
         release.startPreparation();
@@ -107,8 +91,7 @@ public class ReleaseService {
     }
 
     public Release publishRelease(
-            @NonNull String releaseId
-    ) {
+            @NonNull String releaseId) {
         Release release = getReleaseById(releaseId);
 
         release.publish();

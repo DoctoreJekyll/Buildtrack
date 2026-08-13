@@ -1,8 +1,6 @@
 package com.jose.buildtrack.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
@@ -31,8 +29,7 @@ public class BuildService {
     public Build createBuild(
             @NonNull String id,
             String version,
-            Platform platform
-    ) {
+            Platform platform) {
         if (buildRepository.existsById(id)) {
             throw new BuildAlreadyExistException(id);
         }
@@ -40,14 +37,9 @@ public class BuildService {
         Build build = new Build(
                 id,
                 new BuildVersion(version),
-                platform
-        );
+                platform);
 
         return buildRepository.save(build);
-    }
-
-    public Optional<Build> findBuildById(@NonNull String buildId) {
-        return buildRepository.findById(buildId);
     }
 
     public Build getBuildById(@NonNull String buildId) {
@@ -58,28 +50,24 @@ public class BuildService {
     public Page<Build> searchBuilds(
             BuildStatus status,
             Platform platform,
-            @NonNull Pageable pageable
-    ) {
+            @NonNull Pageable pageable) {
         if (status != null && platform != null) {
             return buildRepository.findByStatusAndPlatform(
                     status,
                     platform,
-                    pageable
-            );
+                    pageable);
         }
 
         if (status != null) {
             return buildRepository.findByStatus(
                     status,
-                    pageable
-            );
+                    pageable);
         }
 
         if (platform != null) {
             return buildRepository.findByPlatform(
                     platform,
-                    pageable
-            );
+                    pageable);
         }
 
         return buildRepository.findAll(pageable);
@@ -113,15 +101,13 @@ public class BuildService {
             @NonNull String buildId,
             String issueId,
             String title,
-            IssueSeverity severity
-    ) {
+            IssueSeverity severity) {
         Build build = getBuildById(buildId);
 
         Issue issue = new Issue(
                 issueId,
                 title,
-                severity
-        );
+                severity);
 
         build.addIssue(issue);
 
@@ -130,8 +116,7 @@ public class BuildService {
 
     public Build resolveIssue(
             @NonNull String buildId,
-            String issueId
-    ) {
+            String issueId) {
         Build build = getBuildById(buildId);
 
         build.resolveIssue(issueId);
@@ -140,8 +125,7 @@ public class BuildService {
     }
 
     public List<Issue> getIssuesByBuildId(
-            @NonNull String buildId
-    ) {
+            @NonNull String buildId) {
         Build build = getBuildById(buildId);
 
         return build.getIssues();
@@ -149,8 +133,7 @@ public class BuildService {
 
     public Issue getIssueById(
             @NonNull String buildId,
-            String issueId
-    ) {
+            String issueId) {
         Build build = getBuildById(buildId);
 
         return build.findIssueById(issueId)
