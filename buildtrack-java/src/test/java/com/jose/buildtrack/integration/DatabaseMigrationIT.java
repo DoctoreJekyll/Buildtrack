@@ -35,15 +35,14 @@ class DatabaseMigrationIT {
          */
         String latestVersion = jdbcTemplate.queryForObject(
                 """
-                SELECT version
-                FROM flyway_schema_history
-                WHERE success = true
-                  AND version IS NOT NULL
-                ORDER BY installed_rank DESC
-                LIMIT 1
-                """,
-                String.class
-        );
+                        SELECT version
+                        FROM flyway_schema_history
+                        WHERE success = true
+                          AND version IS NOT NULL
+                        ORDER BY installed_rank DESC
+                        LIMIT 1
+                        """,
+                String.class);
 
         assertEquals("5", latestVersion);
     }
@@ -57,19 +56,19 @@ class DatabaseMigrationIT {
          */
         Integer tableCount = jdbcTemplate.queryForObject(
                 """
-                SELECT COUNT(*)
-                FROM information_schema.tables
-                WHERE table_schema = 'public'
-                  AND table_name IN (
-                      'builds',
-                      'issues',
-                      'releases',
-                      'release_builds'
-                  )
-                """,
-                Integer.class
-        );
+                        SELECT COUNT(*)
+                        FROM information_schema.tables
+                        WHERE table_schema = 'public'
+                          AND table_name IN (
+                              'builds',
+                              'issues',
+                              'releases',
+                              'release_builds',
+                              'app_users'
+                          )
+                        """,
+                Integer.class);
 
-        assertEquals(4, tableCount);
+        assertEquals(5, tableCount);
     }
 }

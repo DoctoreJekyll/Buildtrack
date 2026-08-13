@@ -17,11 +17,15 @@ import com.jose.buildtrack.dto.UserResponseDTO;
 import com.jose.buildtrack.mapper.AppUserMapper;
 import com.jose.buildtrack.service.AppUserService;
 import com.jose.buildtrack.service.AuthService;
-
 import jakarta.validation.Valid;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+
+
 
 @RestController
 @RequestMapping("/auth")
+@SecurityRequirements
 public class AuthController {
 
     private final AppUserService appUserService;

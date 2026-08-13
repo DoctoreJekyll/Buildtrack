@@ -2,14 +2,14 @@ package com.jose.buildtrack.exceptions;
 
 import com.jose.buildtrack.dto.ErrorResponseDTO;
 
-import javax.naming.AuthenticationException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.security.core.AuthenticationException;
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,8 +20,7 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),
-                exception.getMessage()
-        );
+                exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
@@ -32,8 +31,7 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.CONFLICT.value(),
                 HttpStatus.CONFLICT.getReasonPhrase(),
-                exception.getMessage()
-        );
+                exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
@@ -47,8 +45,7 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                exception.getMessage()
-        );
+                exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
@@ -66,23 +63,21 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                message
-        );
+                message);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-	@ExceptionHandler(InvalidPlatformException.class)
-        public ResponseEntity<ErrorResponseDTO> handleInvalidPlatform(InvalidPlatformException exception) {
+    @ExceptionHandler(InvalidPlatformException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidPlatform(InvalidPlatformException exception) {
 
-		ErrorResponseDTO response = new ErrorResponseDTO(
-				HttpStatus.BAD_REQUEST.value(),
-				HttpStatus.BAD_REQUEST.getReasonPhrase(),
-				exception.getMessage()
-		);
+        ErrorResponseDTO response = new ErrorResponseDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                exception.getMessage());
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-	}
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
 
     @ExceptionHandler(IssueNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleIssueNotFound(IssueNotFoundException exception) {
@@ -90,12 +85,10 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),
-                exception.getMessage()
-        );
+                exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
-
 
     @ExceptionHandler(InvalidIssueSeverityException.class)
     public ResponseEntity<ErrorResponseDTO> handleInvalidIssueSeverity(InvalidIssueSeverityException exception) {
@@ -103,8 +96,7 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                exception.getMessage()
-        );
+                exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
@@ -115,8 +107,7 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),
-                exception.getMessage()
-        );
+                exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
@@ -127,22 +118,19 @@ public class GlobalExceptionHandler {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.CONFLICT.value(),
                 HttpStatus.CONFLICT.getReasonPhrase(),
-                exception.getMessage()
-        );
+                exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ErrorResponseDTO> handleMethodValidation(
-            HandlerMethodValidationException exception
-    ) {
+            HandlerMethodValidationException exception) {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                "Invalid request parameters"
-        );
-    
+                "Invalid request parameters");
+
         return ResponseEntity
                 .badRequest()
                 .body(response);
@@ -150,13 +138,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleUsernameAlreadyExists(
-            UsernameAlreadyExistsException exception
-    ) {
+            UsernameAlreadyExistsException exception) {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.CONFLICT.value(),
                 HttpStatus.CONFLICT.getReasonPhrase(),
-                exception.getMessage()
-        );
+                exception.getMessage());
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
@@ -165,13 +151,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(
-            AuthenticationException exception
-    ) {
+            AuthenticationException exception) {
         ErrorResponseDTO response = new ErrorResponseDTO(
                 HttpStatus.UNAUTHORIZED.value(),
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                "Invalid username or password"
-        );
+                "Invalid username or password");
 
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
