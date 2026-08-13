@@ -45,19 +45,95 @@ class BuildPaginationControllerTest {
         buildRepository.deleteAll();
 
         buildRepository.saveAll(List.of(
-                createBuild("B-001", "1.0.0"),
-                createBuild("B-002", "1.1.0"),
-                createBuild("B-003", "1.2.0"),
-                createBuild("B-004", "2.0.0"),
-                createBuild("B-005", "2.1.0")
-        ));
+                createBuild(
+                        "B-001",
+                        "1.0.0",
+                        Platform.WINDOWS),
+                createBuild(
+                        "B-002",
+                        "1.1.0",
+                        Platform.LINUX),
+                createValidatingBuild(
+                        "B-003",
+                        "1.2.0",
+                        Platform.WINDOWS),
+                createApprovedBuild(
+                        "B-004",
+                        "2.0.0",
+                        Platform.WINDOWS),
+                createApprovedBuild(
+                        "B-005",
+                        "2.1.0",
+                        Platform.LINUX)));
+    }
+
+    @Test
+    void shouldFilterBuildsByStatus() throws Exception {
+        mockMvc.perform(
+                get("/builds")
+                        .param(
+                                "status",
+                                "APPROVED"))
+                .andExpect(status().isOk())
+                .andExpect(
+                        jsonPath("$.content.length()")
+                                .value(2))
+                .andExpect(
+                        jsonPath("$.content[0].id")
+                                .value("B-004"))
+                .andExpect(
+                        jsonPath("$.content[1].id")
+                                .value("B-005"))
+                .andExpect(
+                        jsonPath("$.totalElements")
+                                .value(2));
+    }
+
+    @Test
+    void shouldFilterBuildsByPlatform() throws Exception {
+        mockMvc.perform(
+                get("/builds")
+                        .param(
+                                "platform",
+                                "WINDOWS"))
+                .andExpect(status().isOk())
+                .andExpect(
+                        jsonPath("$.content.length()")
+                                .value(3))
+                .andExpect(
+                        jsonPath("$.totalElements")
+                                .value(3));
+    }
+
+    @Test
+    void shouldFilterBuildsByStatusAndPlatform()
+            throws Exception {
+
+        mockMvc.perform(
+                get("/builds")
+                        .param(
+                                "status",
+                                "APPROVED")
+                        .param(
+                                "platform",
+                                "LINUX"))
+                .andExpect(status().isOk())
+                .andExpect(
+                        jsonPath("$.content.length()")
+                                .value(1))
+                .andExpect(
+                        jsonPath("$.content[0].id")
+                                .value("B-005"))
+                .andExpect(
+                        jsonPath("$.totalElements")
+                                .value(1));
     }
 
     @Test
     void shouldReturnFirstPageOfBuilds() throws Exception {
         mockMvc.perform(get("/builds")
-                        .param("page", "0")
-                        .param("size", "2"))
+                .param("page", "0")
+                .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(2))
                 .andExpect(jsonPath("$.content[0].id").value("B-001"))
@@ -73,8 +149,8 @@ class BuildPaginationControllerTest {
     @Test
     void shouldReturnSecondPageOfBuilds() throws Exception {
         mockMvc.perform(get("/builds")
-                        .param("page", "1")
-                        .param("size", "2"))
+                .param("page", "1")
+                .param("size", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(2))
                 .andExpect(jsonPath("$.content[0].id").value("B-003"))
@@ -90,8 +166,8 @@ class BuildPaginationControllerTest {
     @Test
     void shouldReturnEmptyContentWhenPageIsOutsideRange() throws Exception {
         mockMvc.perform(get("/builds")
-                        .param("page", "50")
-                        .param("size", "10"))
+                .param("page", "50")
+                .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isEmpty())
                 .andExpect(jsonPath("$.page").value(50))
@@ -118,35 +194,63 @@ class BuildPaginationControllerTest {
     @Test
     void shouldRejectNegativePageNumber() throws Exception {
         mockMvc.perform(get("/builds")
-                        .param("page", "-1")
-                        .param("size", "10"))
+                .param("page", "-1")
+                .param("size", "10"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void shouldRejectPageSizeEqualToZero() throws Exception {
         mockMvc.perform(get("/builds")
-                        .param("page", "0")
-                        .param("size", "0"))
+                .param("page", "0")
+                .param("size", "0"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void shouldRejectPageSizeGreaterThanMaximum() throws Exception {
         mockMvc.perform(get("/builds")
-                        .param("page", "0")
-                        .param("size", "101"))
+                .param("page", "0")
+                .param("size", "101"))
                 .andExpect(status().isBadRequest());
     }
 
     private Build createBuild(
             String id,
-            String version
-    ) {
+            String version,
+            Platform platform) {
         return new Build(
                 id,
                 new BuildVersion(version),
-                Platform.WINDOWS
-        );
+                platform);
+    }
+
+    private Build createValidatingBuild(
+            String id,
+            String version,
+            Platform platform) {
+        Build build = createBuild(
+                id,
+                version,
+                platform);
+
+        build.startValidation();
+
+        return build;
+    }
+
+    private Build createApprovedBuild(
+            String id,
+            String version,
+            Platform platform) {
+        Build build = createBuild(
+                id,
+                version,
+                platform);
+
+        build.startValidation();
+        build.approve();
+
+        return build;
     }
 }

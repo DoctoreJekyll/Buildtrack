@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jose.buildtrack.repository.BuildRepository;
+import com.jose.buildtrack.repository.ReleaseRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -28,17 +29,21 @@ class SecurityAuthorizationTest {
     @Autowired
     private BuildRepository buildRepository;
 
+    @Autowired
+    private ReleaseRepository releaseRepository;
+
     @BeforeEach
     void setUp() {
+        releaseRepository.deleteAll();
         buildRepository.deleteAll();
     }
 
     @Test
     void shouldRejectBuildListingWithoutToken()
             throws Exception {
+
         mockMvc.perform(
-                        get("/builds")
-                )
+                get("/builds"))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -46,16 +51,13 @@ class SecurityAuthorizationTest {
     @Test
     void shouldAllowUserToListBuilds()
             throws Exception {
+
         mockMvc.perform(
-                        get("/builds")
-                                .with(
-                                        jwt().authorities(
-                                                new SimpleGrantedAuthority(
-                                                        "ROLE_USER"
-                                                )
-                                        )
-                                )
-                )
+                get("/builds")
+                        .with(
+                                jwt().authorities(
+                                        new SimpleGrantedAuthority(
+                                                "ROLE_USER"))))
                 .andExpect(status().isOk());
     }
 
@@ -63,16 +65,13 @@ class SecurityAuthorizationTest {
     @Test
     void shouldAllowAdminToListBuilds()
             throws Exception {
+
         mockMvc.perform(
-                        get("/builds")
-                                .with(
-                                        jwt().authorities(
-                                                new SimpleGrantedAuthority(
-                                                        "ROLE_ADMIN"
-                                                )
-                                        )
-                                )
-                )
+                get("/builds")
+                        .with(
+                                jwt().authorities(
+                                        new SimpleGrantedAuthority(
+                                                "ROLE_ADMIN"))))
                 .andExpect(status().isOk());
     }
 
@@ -80,26 +79,22 @@ class SecurityAuthorizationTest {
     @Test
     void shouldRejectBuildCreationForUser()
             throws Exception {
+
         mockMvc.perform(
-                        post("/builds")
-                                .with(
-                                        jwt().authorities(
-                                                new SimpleGrantedAuthority(
-                                                        "ROLE_USER"
-                                                )
-                                        )
-                                )
-                                .contentType(APPLICATION_JSON)
-                                .content(
-                                        """
+                post("/builds")
+                        .with(
+                                jwt().authorities(
+                                        new SimpleGrantedAuthority(
+                                                "ROLE_USER")))
+                        .contentType(APPLICATION_JSON)
+                        .content(
+                                """
                                         {
                                           "id": "B-SEC-001",
                                           "version": "1.0.0",
                                           "platform": "WINDOWS"
                                         }
-                                        """
-                                )
-                )
+                                        """))
                 .andExpect(status().isForbidden());
     }
 
@@ -107,26 +102,22 @@ class SecurityAuthorizationTest {
     @Test
     void shouldAllowBuildCreationForAdmin()
             throws Exception {
+
         mockMvc.perform(
-                        post("/builds")
-                                .with(
-                                        jwt().authorities(
-                                                new SimpleGrantedAuthority(
-                                                        "ROLE_ADMIN"
-                                                )
-                                        )
-                                )
-                                .contentType(APPLICATION_JSON)
-                                .content(
-                                        """
+                post("/builds")
+                        .with(
+                                jwt().authorities(
+                                        new SimpleGrantedAuthority(
+                                                "ROLE_ADMIN")))
+                        .contentType(APPLICATION_JSON)
+                        .content(
+                                """
                                         {
                                           "id": "B-SEC-002",
                                           "version": "1.0.0",
                                           "platform": "WINDOWS"
                                         }
-                                        """
-                                )
-                )
+                                        """))
                 .andExpect(status().isCreated());
     }
 
@@ -134,18 +125,17 @@ class SecurityAuthorizationTest {
     @Test
     void shouldAllowAuthEndpointsWithoutToken()
             throws Exception {
+
         mockMvc.perform(
-                        post("/auth/register")
-                                .contentType(APPLICATION_JSON)
-                                .content(
-                                        """
+                post("/auth/register")
+                        .contentType(APPLICATION_JSON)
+                        .content(
+                                """
                                         {
                                           "username": "security-test-user",
                                           "password": "securePassword123"
                                         }
-                                        """
-                                )
-                )
+                                        """))
                 .andExpect(status().isCreated());
     }
 }
