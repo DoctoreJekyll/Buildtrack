@@ -39,6 +39,15 @@ class SecurityAuthorizationTest {
     }
 
     @Test
+    void shouldAllowHealthCheckWithoutToken()
+            throws Exception {
+
+        mockMvc.perform(
+                get("/actuator/health"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void shouldRejectBuildListingWithoutToken()
             throws Exception {
 

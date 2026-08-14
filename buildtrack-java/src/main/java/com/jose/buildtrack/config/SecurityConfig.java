@@ -29,36 +29,28 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(
             AppUserDetailsService appUserDetailsService,
-            PasswordEncoder passwordEncoder
-    ) {
-        DaoAuthenticationProvider authenticationProvider =
-                new DaoAuthenticationProvider(
-                        appUserDetailsService
-                );
+            PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(
+                appUserDetailsService);
 
         authenticationProvider.setPasswordEncoder(
-                passwordEncoder
-        );
+                passwordEncoder);
 
         return new ProviderManager(
-                authenticationProvider
-        );
+                authenticationProvider);
     }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter authoritiesConverter =
-                new JwtGrantedAuthoritiesConverter();
+        JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
         authoritiesConverter.setAuthoritiesClaimName("role");
         authoritiesConverter.setAuthorityPrefix("ROLE_");
 
-        JwtAuthenticationConverter authenticationConverter =
-                new JwtAuthenticationConverter();
+        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
 
         authenticationConverter.setJwtGrantedAuthoritiesConverter(
-                authoritiesConverter
-        );
+                authoritiesConverter);
 
         return authenticationConverter;
     }
@@ -68,86 +60,74 @@ public class SecurityConfig {
             HttpSecurity http,
             JwtAuthenticationConverter jwtAuthenticationConverter,
             RestAuthenticationEntryPoint authenticationEntryPoint,
-            RestAccessDeniedHandler accessDeniedHandler
-    ) throws Exception {
-    
+            RestAccessDeniedHandler accessDeniedHandler) throws Exception {
+
         http
                 .csrf(csrf -> csrf.disable())
-    
+
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
-                )
-    
+                                SessionCreationPolicy.STATELESS))
+
                 .formLogin(form -> form.disable())
-    
+
                 .httpBasic(basic -> basic.disable())
-    
+
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(
-                                authenticationEntryPoint
-                        )
+                                authenticationEntryPoint)
                         .accessDeniedHandler(
-                                accessDeniedHandler
-                        )
-                )
-    
+                                accessDeniedHandler))
+
                 .authorizeHttpRequests(auth -> auth
-    
+
                         .requestMatchers(
-                                "/auth/**"
-                        ).permitAll()
-    
+                                "/auth/**")
+                        .permitAll()
+
+                        .requestMatchers("/actuator/health")
+                        .permitAll()
+
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-    
+                                "/v3/api-docs/**")
+                        .permitAll()
+
                         .requestMatchers(
                                 HttpMethod.GET,
-                                "/builds/**"
-                        ).hasAnyRole(
+                                "/builds/**")
+                        .hasAnyRole(
                                 "USER",
-                                "ADMIN"
-                        )
-    
+                                "ADMIN")
+
                         .requestMatchers(
                                 HttpMethod.GET,
-                                "/releases/**"
-                        ).hasAnyRole(
+                                "/releases/**")
+                        .hasAnyRole(
                                 "USER",
-                                "ADMIN"
-                        )
-    
+                                "ADMIN")
+
                         .requestMatchers(
-                                "/builds/**"
-                        ).hasRole("ADMIN")
-    
+                                "/builds/**")
+                        .hasRole("ADMIN")
+
                         .requestMatchers(
-                                "/releases/**"
-                        ).hasRole("ADMIN")
-    
-                        .anyRequest().authenticated()
-                )
-    
+                                "/releases/**")
+                        .hasRole("ADMIN")
+
+                        .anyRequest().authenticated())
+
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .authenticationEntryPoint(
-                                authenticationEntryPoint
-                        )
+                                authenticationEntryPoint)
                         .accessDeniedHandler(
-                                accessDeniedHandler
-                        )
+                                accessDeniedHandler)
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(
-                                        jwtAuthenticationConverter
-                                )
-                        )
-                );
-    
+                                        jwtAuthenticationConverter)));
+
         return http.build();
     }
-
 
 }
