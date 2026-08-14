@@ -88,6 +88,9 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health")
                         .permitAll()
 
+                        .requestMatchers("/", "/index.html")
+                        .permitAll()
+
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",

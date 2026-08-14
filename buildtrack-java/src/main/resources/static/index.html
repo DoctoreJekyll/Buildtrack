@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BuildTrack API</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: #f9fafb;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 650px;
+            padding: 48px;
+            background: #1f2937;
+            border-radius: 12px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 2.5rem;
+        }
+
+        p {
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+
+        .links {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        a {
+            padding: 12px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #f9fafb;
+            color: #111827;
+        }
+
+        .secondary {
+            border: 1px solid #4b5563;
+            color: #f9fafb;
+        }
+
+        .status {
+            margin-top: 32px;
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>BuildTrack API</h1>
+
+    <p>
+        REST API for managing software builds, validation issues
+        and release workflows.
+    </p>
+
+    <p>
+        Built with Java, Spring Boot, PostgreSQL, JWT authentication
+        and Docker.
+    </p>
+
+    <div class="links">
+
+        <a
+            class="primary"
+            href="/swagger-ui/index.html">
+            Explore API
+        </a>
+
+        <a
+            class="secondary"
+            href="/actuator/health">
+            Health Check
+        </a>
+
+    </div>
+
+    <div class="status">
+        BuildTrack API · v1.0.0
+    </div>
+
+</div>
+
+</body>
+</html>
