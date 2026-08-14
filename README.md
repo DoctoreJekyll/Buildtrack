@@ -1,361 +1,535 @@
 # BuildTrack
 
-![CI](https://github.com/DoctoreJekyll/Buildtrack/actions/workflows/ci.yml/badge.svg)
+**Production-ready REST API for managing software builds, validation issues and release workflows.**
 
-BuildTrack is a backend API for managing software builds, validation issues, and release readiness.
+BuildTrack is a backend portfolio project built with **Java 21 and Spring Boot**.  
+It models the lifecycle of software builds from creation and validation to approval and release, with business rules, authentication, role-based authorization, database migrations, automated tests and production deployment.
 
-The project models a simplified release workflow where builds are created, validated, approved or rejected, linked to issues, and grouped into releases before publication.
+## Live Demo
 
-## Project Purpose
+**API Landing Page**  
+https://buildtrack-9fvd.onrender.com/
 
-BuildTrack was built as a Java backend portfolio project focused on realistic backend development practices:
+**Swagger UI**  
+https://buildtrack-9fvd.onrender.com/swagger-ui/index.html
 
-* Domain-driven business rules
-* REST API design
-* DTO-based request and response models
-* Validation and centralized error handling
-* Relational persistence with JPA
-* PostgreSQL database integration
-* Dockerized local environment
-* Automated testing with GitHub Actions
-* Docker image publication through CI
+**Health Check**  
+https://buildtrack-9fvd.onrender.com/actuator/health
 
-The goal is to demonstrate a backend service that goes beyond basic CRUD by including business transitions, validation rules, persistence relationships, and automated quality checks.
+> The application is hosted on Render's free tier, so the first request after a period of inactivity may take longer while the service starts.
 
-## Main Features
+---
+
+## What does BuildTrack demonstrate?
+
+BuildTrack was developed as a backend-focused project to apply production-oriented practices beyond basic CRUD operations.
+
+The project includes:
+
+- REST API design with Spring Boot
+- Domain modeling and business rules
+- Layered architecture
+- PostgreSQL persistence with JPA / Hibernate
+- Database versioning with Flyway
+- JWT authentication
+- Role-based authorization (`USER` / `ADMIN`)
+- Pagination and filtering
+- Centralized exception handling
+- DTOs and mapping
+- JPA auditing and domain timestamps
+- Integration and controller testing
+- Docker and Docker Compose
+- Multiple environment profiles
+- Health checks with Spring Boot Actuator
+- OpenAPI / Swagger documentation
+- CI/CD workflow
+- Deployment with Render and Neon PostgreSQL
+
+---
+
+## Domain
+
+BuildTrack revolves around three main concepts:
 
 ### Builds
 
-A build represents a software build candidate for a specific platform.
+A build represents a software version being validated before release.
 
-Supported build lifecycle:
+Lifecycle:
 
 ```text
-CREATED → VALIDATING → APPROVED
-CREATED → VALIDATING → REJECTED
+CREATED
+   ↓
+VALIDATING
+   ├── APPROVED
+   └── REJECTED
 ```
 
-Main rules:
+A build cannot be approved while it contains an unresolved `BLOCKER` issue.
 
-* A build starts in `CREATED` status.
-* A build can only move to `VALIDATING` from `CREATED`.
-* A build can only be approved or rejected from `VALIDATING`.
-* A build cannot be approved if it has open blocker issues.
+Build versions use semantic versioning:
+
+```text
+major.minor.patch
+```
+
+Example:
+
+```text
+1.4.2
+```
+
+---
 
 ### Issues
 
-Issues represent validation problems found in a build.
+Issues belong to builds and represent problems discovered during validation.
 
-Supported issue lifecycle:
+Each issue has:
+
+- Severity
+- Status
+- Resolution timestamp
+
+Lifecycle:
 
 ```text
 OPEN → RESOLVED
 ```
 
-Main rules:
+Issue identifiers are globally unique.
 
-* An issue starts in `OPEN` status.
-* Only open issues can be resolved.
-* A build cannot contain duplicated issue IDs.
-* A build with an open `BLOCKER` issue cannot be approved.
+---
 
 ### Releases
 
-A release groups approved builds and represents a publishable software release.
+A release groups one or more builds.
 
-Supported release lifecycle:
+Lifecycle:
 
 ```text
-DRAFT → READY → PUBLISHED
+DRAFT
+  ↓
+READY
+  ↓
+PUBLISHED
 ```
 
-Main rules:
+A release can only become `READY` when:
 
-* A release starts in `DRAFT` status.
-* Builds can only be added to a `DRAFT` release.
-* A release cannot be prepared without builds.
-* All builds must be approved before preparing or publishing a release.
-* A release cannot be prepared or published if any related build has open blocker issues.
+- It contains at least one build
+- Every build is approved
+- No blocking validation problems remain
+
+Published releases cannot be deleted.
+
+---
+
+## Authentication and Authorization
+
+BuildTrack uses stateless authentication with **JWT Bearer tokens**.
+
+### Public endpoints
+
+```text
+POST /auth/register
+POST /auth/login
+
+GET /
+GET /actuator/health
+
+Swagger / OpenAPI
+```
+
+### USER
+
+Authenticated users can read:
+
+```text
+GET /builds/**
+GET /releases/**
+```
+
+### ADMIN
+
+Administrators can additionally create and modify builds, issues and releases.
+
+Authorization is enforced by Spring Security.
+
+---
+
+## API Overview
+
+Main resources:
+
+```text
+/auth
+/builds
+/releases
+```
+
+The complete API contract and request/response schemas are available through Swagger:
+
+https://buildtrack-9fvd.onrender.com/swagger-ui/index.html
+
+List endpoints support pagination and filtering.
+
+Example:
+
+```http
+GET /builds?page=0&size=10&status=APPROVED&platform=WINDOWS
+```
+
+---
 
 ## Tech Stack
 
-* Java 21
-* Spring Boot
-* Spring Web
-* Spring Data JPA
-* Jakarta Validation
-* PostgreSQL
-* H2 Database for tests
-* Maven
-* Docker
-* Docker Compose
-* GitHub Actions
-* Docker Hub
+### Backend
 
-## Architecture Overview
+- Java 21
+- Spring Boot 3.5
+- Spring Web
+- Spring Data JPA
+- Spring Security
+- Spring OAuth2 Resource Server
+- Bean Validation
 
-The project follows a layered backend structure:
+### Database
+
+- PostgreSQL
+- Hibernate / JPA
+- Flyway
+
+### API Documentation
+
+- OpenAPI
+- Swagger UI
+- Springdoc
+
+### Testing
+
+- JUnit 5
+- Spring Boot Test
+- MockMvc
+- Spring Security Test
+- H2 for isolated tests
+- PostgreSQL integration tests
+
+### Infrastructure
+
+- Maven
+- Docker
+- Docker Compose
+- GitHub Actions
+- Spring Boot Actuator
+- Render
+- Neon PostgreSQL
+
+---
+
+## Architecture
+
+The application follows a layered backend architecture:
 
 ```text
+HTTP Request
+     │
+     ▼
 Controller
-    ↓
+     │
+     ▼
+DTO / Mapper
+     │
+     ▼
 Service
-    ↓
+     │
+     ▼
+Domain Model
+     │
+     ▼
 Repository
-    ↓
-Domain / Persistence Entities
+     │
+     ▼
+PostgreSQL
 ```
 
-Main packages:
+Responsibilities are separated between:
 
 ```text
-controller   → REST endpoints
-service      → application use cases
-domain       → business entities and rules
-repository   → Spring Data JPA repositories
-dto          → request and response models
-mapper       → domain-to-DTO mapping
-exceptions   → custom exceptions and global error handling
+controller
+service
+domain
+repository
+dto
+mapper
+config
+exception
 ```
 
-## Persistence Model
+Business rules are kept inside the domain/service layer instead of being implemented directly in controllers.
 
-The application uses PostgreSQL in development and Docker environments.
+---
 
-Main persisted concepts:
+## Database Migrations
+
+Database schema changes are managed exclusively through **Flyway**.
+
+Current migrations include:
 
 ```text
-Build
-BuildVersion
-Issue
-Release
+V1 - Initial schema
+V2 - Database indexes
+V3 - Technical auditing timestamps
+V4 - Domain event timestamps
+V5 - Application users and authentication
 ```
 
-Relationships:
+Hibernate runs with:
+
+```properties
+spring.jpa.hibernate.ddl-auto=validate
+```
+
+Therefore Hibernate validates the schema but does not create or modify production tables.
+
+---
+
+## Auditing
+
+Entities include technical auditing timestamps:
 
 ```text
-Build 1 ---- N Issue
-Release N ---- N Build
+createdAt
+updatedAt
 ```
 
-Database tables include:
+The domain also records meaningful lifecycle events:
 
 ```text
-builds
-issues
-releases
-release_builds
+Build.completedAt
+Issue.resolvedAt
+Release.publishedAt
 ```
 
-`release_builds` is the join table used to persist the many-to-many relationship between releases and builds.
+This separates infrastructure auditing from domain events.
 
-## Running the Project with Docker
+---
 
-The easiest way to run the full application is with Docker Compose.
+## Pagination and Filtering
 
-From the project folder:
+Builds can be filtered by:
+
+```text
+status
+platform
+```
+
+Releases can be filtered by:
+
+```text
+status
+```
+
+Responses use a common paginated structure containing:
+
+```json
+{
+  "content": [],
+  "page": 0,
+  "size": 10,
+  "totalElements": 0,
+  "totalPages": 0,
+  "first": true,
+  "last": true
+}
+```
+
+---
+
+## Environment Configuration
+
+BuildTrack separates configuration by environment:
+
+```text
+application.properties
+application-dev.properties
+application-docker.properties
+application-prod.properties
+```
+
+Tests use their own configuration under:
+
+```text
+src/test/resources
+```
+
+Production credentials are supplied exclusively through environment variables.
+
+Main production variables:
+
+```text
+DB_HOST
+DB_PORT
+DB_NAME
+DB_USERNAME
+DB_PASSWORD
+DB_SSLMODE
+
+JWT_SECRET
+JWT_ISSUER
+JWT_EXPIRATION_SECONDS
+
+SPRING_PROFILES_ACTIVE
+```
+
+No production credentials are stored in the repository.
+
+---
+
+## Running Locally
+
+### Requirements
+
+- Java 21
+- Maven
+- Docker
+
+Clone the repository:
 
 ```bash
-cd buildtrack-java
+git clone https://github.com/DoctoreJekyll/Buildtrack.git
+cd Buildtrack/buildtrack-java
+```
+
+Start PostgreSQL:
+
+```bash
+docker compose up -d postgres
+```
+
+Run the API using the development profile:
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+
+Swagger will be available at:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+Health check:
+
+```text
+http://localhost:8080/actuator/health
+```
+
+---
+
+## Running with Docker
+
+The complete application can also be started with:
+
+```bash
 docker compose up --build
 ```
 
 This starts:
 
 ```text
-buildtrack-api
-buildtrack-postgres
+BuildTrack API
+      │
+      ▼
+PostgreSQL
 ```
 
-The API will be available at:
+using the Docker-specific Spring profile.
 
-```text
-http://localhost:8080
-```
+---
 
-PostgreSQL runs inside Docker and is configured through the `docker` Spring profile.
+## Tests
 
-To stop the containers:
+Run the complete automated test suite with:
 
 ```bash
-docker compose down
-```
-
-To stop the containers and remove the database volume:
-
-```bash
-docker compose down -v
-```
-
-Use `-v` only when you want to delete the local PostgreSQL data.
-
-## Running the Application Locally
-
-You can also run the Spring Boot application locally while using PostgreSQL from Docker.
-
-Start PostgreSQL:
-
-```bash
-cd buildtrack-java
-docker compose up -d postgres
-```
-
-Run the app with the `dev` profile:
-
-```bash
-mvn spring-boot:run "-Dspring-boot.run.profiles=dev"
-```
-
-The API will be available at:
-
-```text
-http://localhost:8080
-```
-
-## Running Tests
-
-Tests use H2 in-memory database by default.
-
-From the project folder:
-
-```bash
-cd buildtrack-java
 mvn clean test
 ```
 
-The test suite covers:
+The test strategy includes:
 
-* Domain rules
-* Service use cases
-* Controller/API flows with MockMvc
-* Build lifecycle
-* Issue lifecycle
-* Release lifecycle
-* Error handling scenarios
+- Domain unit tests
+- Service tests
+- Repository tests
+- Controller integration tests
+- Authorization tests
+- Real JWT authentication integration tests
+- Pagination and filtering tests
+- Flyway migration integration tests
 
-## CI/CD
+Tests use H2 where database isolation is sufficient, while migration verification is performed against PostgreSQL.
 
-The project uses GitHub Actions for continuous integration.
+---
 
-On every push or pull request to `main`, the pipeline:
+## Production Deployment
 
-1. Checks out the repository.
-2. Sets up Java 21.
-3. Runs Maven tests.
-4. Builds the Docker image.
-5. Publishes the Docker image to Docker Hub on push events.
-
-Docker image:
+Production architecture:
 
 ```text
-joseajierro/buildtrack-api:latest
+                 Internet
+                    │
+                    ▼
+              Render Web Service
+                    │
+              Docker container
+                    │
+             Spring Boot API
+                    │
+                    ▼
+             Neon PostgreSQL
 ```
 
-## Example API Flow
+Render uses:
 
-### Create a build
-
-```http
-POST /builds
+```text
+SPRING_PROFILES_ACTIVE=prod
 ```
 
-```json
-{
-  "id": "B-001",
-  "version": "1.0.0",
-  "platform": "WINDOWS"
-}
+and monitors:
+
+```text
+GET /actuator/health
 ```
 
-### Add an issue to the build
+to verify application health.
 
-```http
-POST /builds/B-001/issues
-```
+Database communication uses SSL in production.
 
-```json
-{
-  "id": "ISSUE-001",
-  "title": "Crash on startup",
-  "severity": "BLOCKER"
-}
-```
+---
 
-### Resolve the issue
+## Project Goals
 
-```http
-POST /builds/B-001/issues/ISSUE-001/resolve
-```
+BuildTrack was created to strengthen practical backend engineering skills while transitioning toward Java / Spring backend development.
 
-### Start build validation
+Rather than focusing only on CRUD operations, the project emphasizes:
 
-```http
-POST /builds/B-001/validate
-```
+- Explicit domain rules
+- Testable business logic
+- Secure API access
+- Database evolution
+- Environment isolation
+- Containerization
+- Production deployment
 
-### Approve the build
+The project is intentionally backend-only. Swagger UI acts as the interactive interface for exploring and testing the API.
 
-```http
-POST /builds/B-001/approve
-```
+---
 
-### Create a release
+## Author
 
-```http
-POST /releases
-```
+**José Antonio Rodríguez**
 
-```json
-{
-  "id": "R-001",
-  "name": "Release 1.0.0"
-}
-```
+Backend Developer — Java / Spring Boot
 
-### Add the build to the release
-
-```http
-POST /releases/R-001/builds/B-001
-```
-
-### Prepare the release
-
-```http
-POST /releases/R-001/prepare
-```
-
-### Publish the release
-
-```http
-POST /releases/R-001/publish
-```
-
-## Current Status
-
-Implemented:
-
-* Build lifecycle management
-* Issue management
-* Release workflow
-* REST API endpoints
-* DTO mapping
-* Validation
-* Centralized error responses
-* JPA persistence
-* PostgreSQL integration
-* Docker Compose setup
-* GitHub Actions CI
-* Docker Hub image publication
-
-## Possible Next Improvements
-
-Planned or potential improvements:
-
-* OpenAPI/Swagger documentation
-* Pagination and filtering
-* Flyway database migrations
-* Authentication and authorization
-* More detailed integration tests
-* Docker image security hardening
-* Improved Docker image tagging strategy
-* Deployment to a cloud platform
+GitHub:  
+https://github.com/DoctoreJekyll
